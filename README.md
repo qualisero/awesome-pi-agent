@@ -31,6 +31,12 @@ Concise, curated resources for extending and integrating the pi coding agent.
 
 ---
 
+## Themes
+
+*No community themes yet — contributions welcome!*
+
+---
+
 ## Providers & Integrations
 
 - [pi-acp](https://github.com/svkozak/pi-acp) — ACP adapter for pi agent
