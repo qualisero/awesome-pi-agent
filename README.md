@@ -2,52 +2,50 @@
 
 # awesome-pi-agent
 
-A curated list of add-ons, extensions, examples, and resources for the pi coding agent (pi-mono).
+Concise, curated resources for extending and integrating the pi coding agent (pi-mono).
 
-Primary project and docs
-- pi coding agent: https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent
+Primary project
 
-This repository seeds the list with initial, verified links from the official pi-mono project and a few community resources.
+- pi (pi-mono) — coding agent, docs, and examples: https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/docs
 
 Categories
 
-- Getting Started & Docs
-- Extensions
-- Examples & Recipes
-- Integrations & Providers
-- Community & Contributing
-
 Getting Started & Docs
 
-- pi coding agent docs — Official docs: usage, CLI reference, SDK, RPC, sessions, compaction, and configuration. https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/docs
-- packages/coding-agent README — High-level package README and development notes. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/README.md
+- badlogic/pi-mono — Official coding-agent docs and developer notes. https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/docs
+- packages/coding-agent README — Package README and development notes. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/README.md
 
 Extensions
 
-- Hooks documentation — Hook API, lifecycle events, and example hooks (permission gate, git checkpoint, status-line). https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/hooks.md
-- Custom tools documentation — How to author custom tools, TUI rendering, streaming, and state management. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/custom-tools.md
-- Skills documentation — Skill format (SKILL.md), discovery locations, and examples (web search, PDF processing). https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md
-- Theme guide — Theme schema, color tokens, and examples for terminal themes. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/theme.md
+- Custom tools (pi-mono) — Authoring guide for custom tools and examples. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/custom-tools.md
+- Hooks (pi-mono) — Hook API, lifecycle events, and example hooks. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/hooks.md
+- Skills (pi-mono) — SKILL.md format, discovery, and examples. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md
+- Theme guide (pi-mono) — Theme schema and examples for terminal themes. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/theme.md
 
 Examples & Recipes
 
-- Coding agent examples — Working examples for hooks, custom tools, SDK usage, and more. https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/examples
+- Coding agent examples (pi-mono) — Working examples for hooks, custom tools, and SDK usage. https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/examples
+- dotfiles (LarsEckart) — Example agents/pi hooks (bash-history). https://github.com/LarsEckart/dotfiles
+- agents (michalvavra) — Community agent configs and pi hooks (filter-output). https://github.com/michalvavra/agents
+- shitty-extensions (hjanuschka) — Custom hooks and extensions for pi. https://github.com/hjanuschka/shitty-extensions
 
 Integrations & Providers
 
-- Web UI (providers) — Provider dialogs, custom provider store, and model discovery utilities. https://github.com/badlogic/pi-mono/tree/main/packages/web-ui
-- Model registry & discovery — Core model registry implementation and model discovery utilities. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/src/core/model-registry.ts
-- Pods / models list — Example models.json for pods and local models (vLLM/ONNX examples). https://github.com/badlogic/pi-mono/blob/main/packages/pods/src/models.json
-- AI package notes — Implementation notes and external integrations. https://github.com/badlogic/pi-mono/blob/main/packages/ai/README.md
+- pods/models.json (pi-mono) — Example models list and pod configuration. https://github.com/badlogic/pi-mono/blob/main/packages/pods/src/models.json
+- model-registry (pi-mono) — Core model registry implementation. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/src/core/model-registry.ts
+- web-ui (pi-mono) — Provider dialogs, custom provider store, model discovery. https://github.com/badlogic/pi-mono/tree/main/packages/web-ui
+- pi-acp (svkozak) — ACP adapter for pi coding agent (integration example). https://github.com/svkozak/pi-acp
 
 Community & Contributing
 
-- pi-skills — Community skill repositories and examples. https://github.com/badlogic/pi-skills
-- Anthropic skills — Example skill collections for document processing and more. https://github.com/anthropics/skills
+- badlogic/pi-skills — Community skills repository. https://github.com/badlogic/pi-skills
+- anthropics/skills — Anthropic skills collection (document processing, etc.). https://github.com/anthropics/skills
+- mpr (crossjam) — Article mentioning pi coding agent. https://github.com/crossjam/mpr/blob/main/content/pi_coding_agent.md
 
-Usage
+Submission
 
-Add resources as one-line entries with a short description and a link. Keep entries alphabetical within each section.
+- Keep entries concise: one-line description + link
+- Alphabetical order within section required
 
 ### Submission Checklist
 - [ ] Tool is actively maintained (commits within last year)
@@ -59,11 +57,11 @@ Add resources as one-line entries with a short description and a link. Keep entr
 
 Contributing
 
-Please fork, create a topic branch (do not commit to `main`), add your resource, and open a Pull Request. See CONTRIBUTING.md for full guidelines.
+Fork, add a topic branch, update README with a single-line entry and link, and open a PR using the template. See CONTRIBUTING.md for details.
 
-CI helper
+CI
 
-A link-checker workflow is included under .github/workflows/check-links.yml to validate markdown links on push and PRs.
+Link-checker workflow: .github/workflows/check-links.yml (runs on push and PRs)
 
 License
 
