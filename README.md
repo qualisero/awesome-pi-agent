@@ -6,67 +6,57 @@ Concise, curated resources for extending and integrating the pi coding agent.
 
 ## Primary project
 
-- pi (pi-mono) — Official coding agent, docs, and examples: https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/docs
-
----
-
-## Getting Started & Docs
-
-- Official coding-agent docs — Usage, CLI reference, SDK, RPC, sessions, and compaction. https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/docs
-- Package README — High-level package README and development notes. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/README.md
+- [pi (pi-mono)](https://github.com/badlogic/pi-mono) — Official coding agent repository
 
 ---
 
 ## Skills
 
-- Community skills collection — pi-skills repository with example SKILL.md files and workflows. https://github.com/badlogic/pi-skills
-- Anthropic skills — Example skills (document processing, web tools) useful as inspiration. https://github.com/anthropics/skills
+- [pi-skills](https://github.com/badlogic/pi-skills) — Community skills collection with example SKILL.md files and workflows
 
 ---
 
 ## Hooks
 
-- Hooks reference — Hook API, lifecycle events, and example hooks (permission gate, git checkpoint, status-line). https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/hooks.md
-- Community hooks & extensions — example collections and user hooks (memory-mode, plan-mode, filter-output). Examples:
-  - https://github.com/hjanuschka/shitty-extensions
-  - https://github.com/michalvavra/agents
-  - https://github.com/LarsEckart/dotfiles
+- [rhubarb-pi](https://github.com/qualisero/rhubarb-pi) — Collection of small hooks and extensions for pi agent
+- [shitty-extensions](https://github.com/hjanuschka/shitty-extensions) — Community hooks and extensions
+- [michalvavra/agents](https://github.com/michalvavra/agents) — User hooks (memory-mode, plan-mode, filter-output)
+- [LarsEckart/dotfiles](https://github.com/LarsEckart/dotfiles) — Dotfiles with pi agent configuration
 
 ---
 
 ## Custom Tools
 
-- Custom tools guide — Authoring guide for tools callable by the LLM: parameters, rendering, streaming, and session state. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/custom-tools.md
-
----
-
-## Themes
-
-- Theme guide — Theme schema, required color tokens, and examples for terminal themes. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/theme.md
+- [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — Adds SCIP code intelligence tools to pi agent
 
 ---
 
 ## Providers & Integrations
 
-- Web UI provider utilities — Provider dialogs, custom provider store, and model discovery utilities. https://github.com/badlogic/pi-mono/tree/main/packages/web-ui
-- Model registry — Core model/provider registry and API-key resolution implementation. https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/src/core/model-registry.ts
-- Pods / models examples — Example models.json for pods and local runners. https://github.com/badlogic/pi-mono/blob/main/packages/pods/src/models.json
-- Integration examples and adapters:
-  - ACP adapter: https://github.com/svkozak/pi-acp
-  - Project config example: https://github.com/vtemian/pi-config
+- [pi-acp](https://github.com/svkozak/pi-acp) — ACP adapter for pi agent
+- [pi-config](https://github.com/vtemian/pi-config) — Project config example
 
 ---
 
 ## Examples & Recipes
 
-- Examples directory — Working examples for hooks, custom tools, SDK usage, and more. https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/examples
-- Context & writeups — articles or notes referencing the agent. https://github.com/crossjam/mpr/blob/main/content/pi_coding_agent.md
+- [crossjam/mpr](https://github.com/crossjam/mpr/blob/main/content/pi_coding_agent.md) — Context and writeups referencing the agent
 
 ---
 
-## Community & Resources
+## Official Documentation
 
-- Search GitHub for additional hooks, tools, skills, and user extensions. Seeded repos above are good starting points.
+Deep links into the official pi-mono repository:
+
+- [Docs directory](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/docs) — Usage, CLI reference, SDK, RPC, sessions, and compaction
+- [Package README](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/README.md) — High-level package README and development notes
+- [Hooks reference](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/hooks.md) — Hook API, lifecycle events, and example hooks
+- [Custom tools guide](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/custom-tools.md) — Authoring guide for tools callable by the LLM
+- [Theme guide](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/theme.md) — Theme schema, color tokens, and examples
+- [Examples directory](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/examples) — Working examples for hooks, custom tools, and SDK usage
+- [Web UI utilities](https://github.com/badlogic/pi-mono/tree/main/packages/web-ui) — Provider dialogs and model discovery utilities
+- [Model registry](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/src/core/model-registry.ts) — Core model/provider registry implementation
+- [Pods models.json](https://github.com/badlogic/pi-mono/blob/main/packages/pods/src/models.json) — Example models.json for pods and local runners
 
 ---
 
