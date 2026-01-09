@@ -136,12 +136,13 @@ Fork, create a topic branch, add your entry to the appropriate section in this R
 
 This repository includes automated tools for discovering new pi-agent resources shared in Discord servers. See [discord_scraping/](discord_scraping/) for:
 
+- **Puppeteer-based scraper** with forum post support
 - Incremental message tracker with state persistence
-- GitHub link extraction
+- GitHub link extraction from channels and forums
 - Automatic filtering for pi-agent content
 - Integration with awesome list checking
 
-Run `./discord_scraping/run-tracker.sh` to find new resources to add to this list.
+Run `./discord_scraping/run.sh` to find new resources to add to this list.
 
 ## CI
 
