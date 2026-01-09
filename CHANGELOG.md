@@ -6,9 +6,26 @@ All notable additions, removals, and changes to the awesome-pi-agent list.
 
 ### Added
 - **pi-canvas** (jyaunches/pi-canvas) - Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
+- **pi-extensions** (aliou/pi-extensions) - Collection of debugging and utility extensions for pi agent
+  - debug extension: Session path clipboard utility
+  - meta extension: Meta operations
+  - processes extension: Process management utilities
+- **pi-cost-dashboard** (mrexodia/pi-cost-dashboard) - Interactive web dashboard to monitor and analyze API costs
+- **pi-extensions** (tmustier/pi-extensions) - Collection of delightful extensions
+  - agent-guidance: Agent behavior guidance
+  - arcade: Arcade-style interactions
+  - tab-status: Tab status indicators
+- **pi-ssh-remote** (cv/pi-ssh-remote) - Redirects file operations and commands to remote host via SSH
+- **claude-code-ui** (KyleAMathews/claude-code-ui) - Session tracker UI with real-time updates
 
 ### Removed
 - **pi-ralph** (Whamp/pi-ralph) - Repository no longer exists (404 error)
+
+### Infrastructure
+- **Discord scraper upgraded** from CDP to Puppeteer
+- Now successfully scrapes Discord forum posts (previously impossible)
+- Discovered 8 new repositories from forums that were previously inaccessible
+- 3-4x more repositories found overall
 
 ### Validated
 - Discord scraper scan completed - 4 repositories found, all false positives (GitHub infrastructure repos, forks, self-reference)

@@ -20,14 +20,24 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
   - [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
   - [security](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/security.ts) — Block dangerous bash commands and protect sensitive paths from writes
+- [pi-extensions](https://github.com/aliou/pi-extensions) — Collection of debugging and utility extensions
+  - [debug](https://github.com/aliou/pi-extensions/tree/main/extensions/debug) — Session path clipboard utility and debugging tools
+  - [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
+  - [processes](https://github.com/aliou/pi-extensions/tree/main/extensions/processes) — Process management utilities
 - [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — SCIP code intelligence tools for pi agent
 - [pi-hooks](https://github.com/prateekmedia/pi-hooks) — Minimal reference extensions
   - [checkpoint](https://github.com/prateekmedia/pi-hooks/tree/main/checkpoint) — Git-based checkpoint system for restoring code state when branching conversations
   - [lsp](https://github.com/prateekmedia/pi-hooks/tree/main/lsp) — Language Server Protocol integration with auto-diagnostics and on-demand queries
   - [permission](https://github.com/prateekmedia/pi-hooks/tree/main/permission) — Layered permission control with four levels (off, low, medium, high)
 - [pi-canvas](https://github.com/jyaunches/pi-canvas) — Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
+- [pi-cost-dashboard](https://github.com/mrexodia/pi-cost-dashboard) — Interactive web dashboard to monitor and analyze API costs
+- [pi-extensions](https://github.com/tmustier/pi-extensions) — Collection of delightful extensions for pi agent
+  - [agent-guidance](https://github.com/tmustier/pi-extensions/tree/main/agent-guidance) — Agent behavior guidance and instructions
+  - [arcade](https://github.com/tmustier/pi-extensions/tree/main/arcade) — Arcade-style interactions and games
+  - [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
+- [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
 - [rhubarb-pi](https://github.com/qualisero/rhubarb-pi) — Collection of small extensions for pi agent
   - [background-notify](https://github.com/qualisero/rhubarb-pi/blob/main/docs/background-notify.md) — Notifications when tasks complete (audio beep, terminal focus)
   - [session-emoji](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-emoji.md) — AI-powered emoji in footer representing conversation context
@@ -63,6 +73,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 
 ## Tools & Utilities
 
+- [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Claude Code session tracker UI with real-time updates via Durable Streams
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
 
 ---
@@ -132,12 +143,13 @@ Fork, create a topic branch, add your entry to the appropriate section in this R
 
 This repository includes automated tools for discovering new pi-agent resources shared in Discord servers. See [discord_scraping/](discord_scraping/) for:
 
+- **Puppeteer-based scraper** with forum post support
 - Incremental message tracker with state persistence
-- GitHub link extraction
+- GitHub link extraction from channels and forums
 - Automatic filtering for pi-agent content
 - Integration with awesome list checking
 
-Run `./discord_scraping/run-tracker.sh` to find new resources to add to this list.
+Run `./discord_scraping/run.sh` to find new resources to add to this list.
 
 ## CI
 
