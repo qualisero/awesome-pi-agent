@@ -20,6 +20,10 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
   - [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
   - [security](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/security.ts) — Block dangerous bash commands and protect sensitive paths from writes
+- [pi-extensions](https://github.com/aliou/pi-extensions) — Collection of debugging and utility extensions
+  - [debug](https://github.com/aliou/pi-extensions/tree/main/extensions/debug) — Session path clipboard utility and debugging tools
+  - [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
+  - [processes](https://github.com/aliou/pi-extensions/tree/main/extensions/processes) — Process management utilities
 - [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — SCIP code intelligence tools for pi agent
 - [pi-hooks](https://github.com/prateekmedia/pi-hooks) — Minimal reference extensions
   - [checkpoint](https://github.com/prateekmedia/pi-hooks/tree/main/checkpoint) — Git-based checkpoint system for restoring code state when branching conversations

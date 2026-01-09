@@ -6,6 +6,10 @@ All notable additions, removals, and changes to the awesome-pi-agent list.
 
 ### Added
 - **pi-canvas** (jyaunches/pi-canvas) - Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
+- **pi-extensions** (aliou/pi-extensions) - Collection of debugging and utility extensions for pi agent
+  - debug extension: Session path clipboard utility
+  - meta extension: Meta operations
+  - processes extension: Process management utilities
 
 ### Removed
 - **pi-ralph** (Whamp/pi-ralph) - Repository no longer exists (404 error)

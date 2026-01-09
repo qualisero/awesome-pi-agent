@@ -27,7 +27,7 @@ node "$SCRIPT_DIR/start-browser-headless.js" --profile
 
 # Give Discord more time to load in headless mode
 echo "⏳ Waiting for Discord to load..."
-sleep 10
+sleep 15
 
 # Run tracker
 echo -e "\n${BLUE}Running incremental scan...${NC}\n"

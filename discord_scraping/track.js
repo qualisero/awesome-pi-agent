@@ -139,13 +139,69 @@ async function searchChannel(Runtime, serverId, channel, searchTerm, lastTimesta
   return searchResult.result.value || [];
 }
 
+async function getForumThreads(Runtime, serverId, forumChannelId) {
+  // Navigate to forum channel
+  await Runtime.evaluate({
+    expression: `window.location.href = "https://discord.com/channels/${serverId}/${forumChannelId}"`
+  });
+  
+  await new Promise(resolve => setTimeout(resolve, 5000));
+  
+  // Scroll to load more threads - forums need more scrolling
+  for (let i = 0; i < 10; i++) {
+    await Runtime.evaluate({
+      expression: `
+        const scroller = document.querySelector('[class*="scroller"]');
+        if (scroller) {
+          scroller.scrollTo(0, scroller.scrollHeight);
+        }
+      `
+    });
+    await new Promise(resolve => setTimeout(resolve, 800));
+  }
+  
+  // Extract thread links from forum using multiple selectors
+  const threadsResult = await Runtime.evaluate({
+    expression: `
+      (function() {
+        // Try multiple selectors for forum threads
+        const threadLinks = Array.from(document.querySelectorAll('a[href*="/channels/${serverId}/${forumChannelId}/"]'));
+        const threads = [];
+        
+        threadLinks.forEach(a => {
+          const match = a.href.match(/\\/channels\\/${serverId}\\/${forumChannelId}\\/([0-9]+)/);
+          if (match && match[1] !== '${forumChannelId}') {
+            // Get thread title from various possible locations
+            let name = a.getAttribute('aria-label') || 
+                       a.querySelector('[class*="title"]')?.textContent ||
+                       a.textContent?.trim() || 
+                       'thread-' + match[1];
+            
+            threads.push({
+              id: match[1],
+              name: name.substring(0, 100) // Limit name length
+            });
+          }
+        });
+        
+        // Deduplicate by ID
+        const unique = threads.filter((t, i, arr) => arr.findIndex(x => x.id === t.id) === i);
+        return JSON.stringify(unique);
+      })()
+    `,
+    returnByValue: true
+  });
+  
+  return JSON.parse(threadsResult.result.value || '[]');
+}
+
 async function getChannels(Runtime, serverId) {
   // Navigate to server root
   await Runtime.evaluate({
     expression: `window.location.href = "https://discord.com/channels/${serverId}"`
   });
   
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise(resolve => setTimeout(resolve, 8000)); // Increased wait time for Discord to load
   
   // Extract channels from links
   const linksResult = await Runtime.evaluate({
@@ -163,19 +219,31 @@ async function getChannels(Runtime, serverId) {
   
   const channelIds = JSON.parse(linksResult.result.value);
   
-  // Get channel names
+  // Get channel names and detect forum channels
   const channels = [];
   for (const id of channelIds) {
     const nameResult = await Runtime.evaluate({
       expression: `
-        document.querySelector('a[href*="/channels/${serverId}/${id}"]')?.textContent?.trim() || 'channel-${id}'
+        (function() {
+          const link = document.querySelector('a[href*="/channels/${serverId}/${id}"]');
+          if (!link) return JSON.stringify({ name: 'channel-${id}', isForum: false });
+          
+          const name = link.textContent?.trim() || 'channel-${id}';
+          const isForum = link.getAttribute('aria-label')?.toLowerCase().includes('forum') || 
+                         link.parentElement?.querySelector('[data-list-item-id*="forum"]') !== null ||
+                         name.toLowerCase().includes('forum');
+          
+          return JSON.stringify({ name: name, isForum: isForum });
+        })()
       `,
       returnByValue: true
     });
     
+    const channelInfo = JSON.parse(nameResult.result.value || '{"name":"channel-' + id + '","isForum":false}');
     channels.push({
       id: id,
-      name: nameResult.result.value
+      name: channelInfo.name,
+      isForum: channelInfo.isForum
     });
   }
   
@@ -227,23 +295,61 @@ async function track() {
           lastMatchTimestamp: null
         };
         
-        const matches = await searchChannel(
-          Runtime, 
-          serverId, 
-          channel, 
-          state.searchTerms[0],
-          lastRun
-        );
-        
-        channelState.lastChecked = runTimestamp;
-        channelState.totalMatches += matches.length;
-        
-        if (matches.length > 0) {
-          console.log(`    ✅ Found ${matches.length} new matches`);
-          channelState.lastMatchTimestamp = matches[0].timestamp;
-          allResults.push(...matches);
+        // If it's a forum channel, get threads and search them
+        if (channel.isForum) {
+          console.log(`  📁 Forum: ${channel.name}`);
+          const threads = await getForumThreads(Runtime, serverId, channel.id);
+          console.log(`     Found ${threads.length} threads`);
+          
+          for (const thread of threads) {
+            const threadKey = `${serverId}:${channel.id}:${thread.id}`;
+            const threadState = state.channelHistory[threadKey] || {
+              name: `${channel.name} / ${thread.name}`,
+              lastChecked: null,
+              totalMatches: 0,
+              lastMatchTimestamp: null
+            };
+            
+            console.log(`     Searching thread: ${thread.name}...`);
+            const threadMatches = await searchChannel(
+              Runtime,
+              serverId,
+              { id: thread.id, name: `${channel.name} / ${thread.name}` },
+              state.searchTerms[0],
+              lastRun
+            );
+            
+            threadState.lastChecked = runTimestamp;
+            threadState.totalMatches += threadMatches.length;
+            
+            if (threadMatches.length > 0) {
+              console.log(`        ✅ Found ${threadMatches.length} matches in thread`);
+              threadState.lastMatchTimestamp = threadMatches[0].timestamp;
+              allResults.push(...threadMatches);
+            }
+            
+            state.channelHistory[threadKey] = threadState;
+          }
         } else {
-          console.log(`    ⊘ No new matches`);
+          // Regular channel search
+          const matches = await searchChannel(
+            Runtime, 
+            serverId, 
+            channel, 
+            state.searchTerms[0],
+            lastRun
+          );
+          
+          channelState.lastChecked = runTimestamp;
+          channelState.totalMatches += matches.length;
+          
+          if (matches.length > 0) {
+            console.log(`    ✅ Found ${matches.length} new matches`);
+            channelState.lastMatchTimestamp = matches[0].timestamp;
+            allResults.push(...matches);
+          } else {
+            console.log(`    ⊘ No new matches`);
+          }
         }
         
         state.channelHistory[channelKey] = channelState;
