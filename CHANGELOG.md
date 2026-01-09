@@ -2,7 +2,28 @@
 
 All notable additions, removals, and changes to the awesome-pi-agent list.
 
-## 2026-01-07 (Latest Update)
+## 2026-01-09 (Latest Update)
+
+### Removed
+- **pi-ralph** (Whamp/pi-ralph) - Repository no longer exists (404 error)
+
+### Validated
+- Discord scraper scan completed - 4 repositories found, all false positives (GitHub infrastructure repos, forks, self-reference)
+- All remaining entries verified:
+  - 30+ GitHub links checked and working (HTTP 200)
+  - All repositories active with recent commits (within last 3 months)
+  - No additional archived or abandoned projects detected
+- Verified all collection sublists are current and accurate
+- Link checker configuration validated (mlc_config.json)
+
+### Notes
+- Removed "Recent Change (v0.35.0)" notice from README as per maintenance cleanup
+- Updated local AGENTS.md with comprehensive "list update" workflow instructions
+- Added .pi/agent/AGENTS.md to .gitignore for local configuration
+
+---
+
+## 2026-01-07 (Previous Update)
 
 ### Added
 - **oracle** extension to **shitty-extensions** collection - Get second opinions from alternative AI models without switching contexts

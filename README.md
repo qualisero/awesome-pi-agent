@@ -5,8 +5,6 @@
 Concise, curated resources for extending and integrating the [pi coding agent](https://shittycodingagent.ai)
 (Yes, it was tempting to call it `shitty-list`).
 
-> **📢 Recent Change (v0.35.0):** Hooks and custom tools are now unified as **extensions**. See the [migration guide](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/CHANGELOG.md#extensions-migration) if you're upgrading from older versions.
-
 ## Primary project
 
 - [pi (pi-mono)](https://github.com/badlogic/pi-mono) — Official coding agent repository
@@ -29,7 +27,6 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [permission](https://github.com/prateekmedia/pi-hooks/tree/main/permission) — Layered permission control with four levels (off, low, medium, high)
 - [pi-canvas](https://github.com/jyaunches/pi-canvas) — Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
-- [pi-ralph](https://github.com/Whamp/pi-ralph) — Ralph Wiggum technique for autonomous iterative AI development loops
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
 - [rhubarb-pi](https://github.com/qualisero/rhubarb-pi) — Collection of small extensions for pi agent
   - [background-notify](https://github.com/qualisero/rhubarb-pi/blob/main/docs/background-notify.md) — Notifications when tasks complete (audio beep, terminal focus)
