@@ -139,60 +139,53 @@ async function searchChannel(Runtime, serverId, channel, searchTerm, lastTimesta
   return searchResult.result.value || [];
 }
 
-async function getForumThreads(Runtime, serverId, forumChannelId) {
-  // Navigate to forum channel
-  await Runtime.evaluate({
-    expression: `window.location.href = "https://discord.com/channels/${serverId}/${forumChannelId}"`
-  });
+async function getAllForumThreads(Runtime, serverId) {
+  // Get ALL thread links from the entire page
+  // Forum threads have pattern: /channels/serverId/forumId/threadId
   
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise(resolve => setTimeout(resolve, 3000));
   
-  // Scroll to load more threads - forums need more scrolling
-  for (let i = 0; i < 10; i++) {
-    await Runtime.evaluate({
-      expression: `
-        const scroller = document.querySelector('[class*="scroller"]');
-        if (scroller) {
-          scroller.scrollTo(0, scroller.scrollHeight);
-        }
-      `
-    });
-    await new Promise(resolve => setTimeout(resolve, 800));
-  }
-  
-  // Extract thread links from forum using multiple selectors
   const threadsResult = await Runtime.evaluate({
     expression: `
       (function() {
-        // Try multiple selectors for forum threads
-        const threadLinks = Array.from(document.querySelectorAll('a[href*="/channels/${serverId}/${forumChannelId}/"]'));
-        const threads = [];
+        const threadsByForum = {};
+        const allLinks = Array.from(document.querySelectorAll('a[href*="/channels/${serverId}/"]'));
         
-        threadLinks.forEach(a => {
-          const match = a.href.match(/\\/channels\\/${serverId}\\/${forumChannelId}\\/([0-9]+)/);
-          if (match && match[1] !== '${forumChannelId}') {
-            // Get thread title from various possible locations
-            let name = a.getAttribute('aria-label') || 
-                       a.querySelector('[class*="title"]')?.textContent ||
-                       a.textContent?.trim() || 
-                       'thread-' + match[1];
+        allLinks.forEach(a => {
+          // Match pattern with 3 IDs: /channels/serverId/forumId/threadId
+          const match = a.href.match(/\\/channels\\/${serverId}\\/([0-9]+)\\/([0-9]+)/);
+          if (match) {
+            const forumId = match[1];
+            const threadId = match[2];
             
-            threads.push({
-              id: match[1],
-              name: name.substring(0, 100) // Limit name length
-            });
+            if (!threadsByForum[forumId]) {
+              threadsByForum[forumId] = [];
+            }
+            
+            // Check if thread already added
+            if (!threadsByForum[forumId].find(t => t.id === threadId)) {
+              let name = a.getAttribute('aria-label') || 
+                         a.getAttribute('title') ||
+                         a.textContent?.trim() || 
+                         'thread-' + threadId;
+              
+              name = name.replace(/^#/, '').trim();
+              
+              threadsByForum[forumId].push({
+                id: threadId,
+                name: name.substring(0, 100)
+              });
+            }
           }
         });
         
-        // Deduplicate by ID
-        const unique = threads.filter((t, i, arr) => arr.findIndex(x => x.id === t.id) === i);
-        return JSON.stringify(unique);
+        return JSON.stringify(threadsByForum);
       })()
     `,
     returnByValue: true
   });
   
-  return JSON.parse(threadsResult.result.value || '[]');
+  return JSON.parse(threadsResult.result.value || '{}');
 }
 
 async function getChannels(Runtime, serverId) {
@@ -286,6 +279,9 @@ async function track() {
       const channels = await getChannels(Runtime, serverId);
       console.log(`Found ${channels.length} channels\n`);
       
+      // Get all forum threads at once from the page
+      const allThreadsByForum = await getAllForumThreads(Runtime, serverId);
+      
       for (const channel of channels) {
         const channelKey = `${serverId}:${channel.id}`;
         const channelState = state.channelHistory[channelKey] || {
@@ -295,10 +291,10 @@ async function track() {
           lastMatchTimestamp: null
         };
         
-        // If it's a forum channel, get threads and search them
+        // If it's a forum channel, get its threads from the collected data
         if (channel.isForum) {
+          const threads = allThreadsByForum[channel.id] || [];
           console.log(`  📁 Forum: ${channel.name}`);
-          const threads = await getForumThreads(Runtime, serverId, channel.id);
           console.log(`     Found ${threads.length} threads`);
           
           for (const thread of threads) {

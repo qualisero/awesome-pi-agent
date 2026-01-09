@@ -4,7 +4,7 @@ Automatically track pi-agent resources shared in Discord servers with incrementa
 
 ## Quick Start
 
-### Interactive Mode (Default)
+### Default Mode (Interactive)
 
 ```bash
 # 1. Navigate to the directory
@@ -13,7 +13,7 @@ cd discord_scraping
 # 2. Install dependencies
 npm install
 
-# 3. Run the tracker
+# 3. Run the tracker (opens visible browser)
 ./run-tracker.sh
 ```
 
@@ -24,8 +24,10 @@ npm install
 ./run-tracker-headless.sh
 ```
 
+**Note**: Both modes currently have the same limitation with forum threads (see below).
+
 That's it! The script will:
-- Start Chrome (headless or with window)
+- Start Chrome (visible or headless)
 - Scan for new messages with GitHub links
 - Filter for pi-agent related content
 - Save results and state
@@ -33,18 +35,30 @@ That's it! The script will:
 
 ## Modes
 
-### Interactive Mode (`run-tracker.sh`)
+### Interactive Mode (`run-tracker.sh`) - **RECOMMENDED DEFAULT**
 - Opens a visible Chrome window
 - Good for first-time setup and debugging
 - Allows manual Discord login if needed
-- **Use this for initial setup**
+- Same functionality as headless mode
+- **Use this as default**
 
 ### Headless Mode (`run-tracker-headless.sh`)
 - Runs Chrome in background (no window)
-- Perfect for automation and cron jobs
+- Suitable for automation when working
 - Requires pre-authenticated Chrome profile
 - Automatically stops browser after scan
-- **Use this for scheduled/automated runs**
+- Same functionality as interactive mode
+- **Use for scheduled runs when you don't need to see the browser**
+
+## Known Limitations
+
+### Forum Threads Not Supported
+Discord forum channels (e.g., "extensions", "share-your-pi") are **not currently scraped** in either mode. 
+- Forum threads require UI interaction that our CDP-based scraper cannot trigger
+- The scraper works for: text channels and "Active Threads" channels
+- Forum discoveries require manual checking or alternative approaches
+
+If a resource is mentioned in a forum thread, it won't be automatically discovered but can be manually added after validation.
 
 ## What It Does
 
@@ -317,7 +331,7 @@ crontab -e
 0 9 * * 1 cd ~/Projects/awesome-pi-agent/discord_scraping && ./run-tracker-headless.sh >> ~/discord-tracker.log 2>&1
 ```
 
-**Note:** Always use `run-tracker-headless.sh` for automation - it automatically cleans up the browser process.
+**Note:** Use headless mode for automation so it doesn't open browser windows. Both modes have the same functionality and limitations.
 
 ## Troubleshooting
 
