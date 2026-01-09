@@ -12,3 +12,6 @@ discord-pi-resources/
 
 # macOS
 .DS_Store
+
+# Local agent configuration
+.pi/agent/AGENTS.md
