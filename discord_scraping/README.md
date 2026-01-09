@@ -4,6 +4,8 @@ Automatically track pi-agent resources shared in Discord servers with incrementa
 
 ## Quick Start
 
+### Interactive Mode (Default)
+
 ```bash
 # 1. Navigate to the directory
 cd discord_scraping
@@ -15,12 +17,34 @@ npm install
 ./run-tracker.sh
 ```
 
+### Headless Mode (No Browser Window)
+
+```bash
+# Run completely in the background
+./run-tracker-headless.sh
+```
+
 That's it! The script will:
-- Start Chrome with Discord open
+- Start Chrome (headless or with window)
 - Scan for new messages with GitHub links
 - Filter for pi-agent related content
 - Save results and state
 - Compare with the awesome list
+
+## Modes
+
+### Interactive Mode (`run-tracker.sh`)
+- Opens a visible Chrome window
+- Good for first-time setup and debugging
+- Allows manual Discord login if needed
+- **Use this for initial setup**
+
+### Headless Mode (`run-tracker-headless.sh`)
+- Runs Chrome in background (no window)
+- Perfect for automation and cron jobs
+- Requires pre-authenticated Chrome profile
+- Automatically stops browser after scan
+- **Use this for scheduled/automated runs**
 
 ## What It Does
 
@@ -109,11 +133,15 @@ Example repo entry:
 
 
 
+## Files
+
 | File | Purpose |
 |------|---------|
-| `run-tracker.sh` | Complete workflow - runs everything |
+| `run-tracker.sh` | Complete workflow - interactive mode |
+| `run-tracker-headless.sh` | Complete workflow - headless mode |
 | `track.js` | Main tracker with state management |
-| `start-browser.js` | Chrome launcher with remote debugging |
+| `start-browser.js` | Chrome launcher (interactive) |
+| `start-browser-headless.js` | Chrome launcher (headless) |
 | `package.json` | Node.js dependencies |
 | `README.md` | This file |
 
@@ -271,23 +299,25 @@ State is persisted in `data/`:
 
 ## Automation
 
-### Run Daily
+### Run Daily (Headless)
 
 Add to crontab:
 
 ```bash
 crontab -e
 
-# Add this line for daily 9 AM scans
-0 9 * * * cd ~/Projects/awesome-pi-agent/discord_scraping && ./run-tracker.sh >> ~/discord-tracker.log 2>&1
+# Add this line for daily 9 AM scans (headless)
+0 9 * * * cd ~/Projects/awesome-pi-agent/discord_scraping && ./run-tracker-headless.sh >> ~/discord-tracker.log 2>&1
 ```
 
-### Run Weekly
+### Run Weekly (Headless)
 
 ```bash
 # Every Monday at 9 AM
-0 9 * * 1 cd ~/Projects/awesome-pi-agent/discord_scraping && ./run-tracker.sh >> ~/discord-tracker.log 2>&1
+0 9 * * 1 cd ~/Projects/awesome-pi-agent/discord_scraping && ./run-tracker-headless.sh >> ~/discord-tracker.log 2>&1
 ```
+
+**Note:** Always use `run-tracker-headless.sh` for automation - it automatically cleans up the browser process.
 
 ## Troubleshooting
 
