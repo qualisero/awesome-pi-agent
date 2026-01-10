@@ -74,8 +74,6 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 
 ## Tools & Utilities
 
-- [claude-code](https://github.com/anthropics/claude-code) — Official Claude Code desktop IDE and VS Code extension from Anthropic
-- [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Claude Code session tracker UI with real-time updates via Durable Streams
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
 
 ---
