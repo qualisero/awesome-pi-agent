@@ -37,6 +37,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
 - [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when the agent finishes and waits for input
+- [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
 - [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
 - [rhubarb-pi](https://github.com/qualisero/rhubarb-pi) — Collection of small extensions for pi agent
@@ -44,6 +45,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [session-emoji](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-emoji.md) — AI-powered emoji in footer representing conversation context
   - [session-color](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-color.md) — Colored band in footer to visually distinguish sessions
   - [safe-git](https://github.com/qualisero/rhubarb-pi/blob/main/docs/safe-git.md) — Require approval before dangerous git operations
+- [pi-dcp](https://github.com/zenobi-us/pi-dcp) — Dynamic context pruning extension for intelligent conversation optimization
 - [shitty-extensions](https://github.com/hjanuschka/shitty-extensions) — Community extensions collection
   - [cost-tracker](https://github.com/hjanuschka/shitty-extensions#cost-trackerts) — Session spending analysis from pi logs
   - [handoff](https://github.com/hjanuschka/shitty-extensions#handoffts) — Transfer context to new focused sessions
