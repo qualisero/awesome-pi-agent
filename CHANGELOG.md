@@ -2,7 +2,30 @@
 
 All notable additions, removals, and changes to the awesome-pi-agent list.
 
-## 2026-01-09 (Latest Update)
+## 2026-01-13
+
+### Added
+- **pi-extensions** (kcosr/pi-extensions) - Collection of extensions for pi coding agent
+  - toolwatch extension: Tool call auditing and approval system with SQLite logging for tracking and blocking dangerous commands
+- **claude-code-ui** (KyleAMathews/claude-code-ui) - Real-time dashboard for monitoring Claude Code sessions across projects with AI summaries, kanban board, PR/CI tracking
+- **gob** (juanibiapina/gob) - Process manager for AI agents and humans with background job support, TUI interface, and claude-code integration
+- **pi-ds** (zenobi-us/pi-ds) - TUI design system component library for pi-mono extensions with TypeScript support, Bun/npm tooling
+- **claude-plugins-official** (anthropics/claude-plugins-official) - Official Anthropic directory of high-quality Claude Code plugins with MCP servers, skills, commands, and agents
+
+### Validated
+- Discord scraper scan completed - 19 repositories found, 5 validated as relevant
+- Filtered out: GitHub apps, gist hashes, pi-mono forks without unique contributions, unrelated projects
+- All existing README links verified (50+ URLs checked, all returning HTTP 200)
+- All repositories actively maintained with commits in last 12 months
+- All collection sublists (pi-skills, shitty-extensions, rhubarb-pi, etc.) remain current
+
+### Infrastructure
+- Discord scraper found new entries from forums and active threads
+- Comprehensive validation workflow executed end-to-end
+
+---
+
+## 2026-01-09 (Previous Update)
 
 ### Added
 - **pi-canvas** (jyaunches/pi-canvas) - Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI

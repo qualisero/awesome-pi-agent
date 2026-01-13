@@ -25,6 +25,8 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
   - [processes](https://github.com/aliou/pi-extensions/tree/main/extensions/processes) — Process management utilities
 - [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — SCIP code intelligence tools for pi agent
+- [pi-extensions](https://github.com/kcosr/pi-extensions) — Collection of extensions for pi coding agent
+  - [toolwatch](https://github.com/kcosr/pi-extensions/tree/main/toolwatch) — Tool call auditing and approval system with SQLite logging
 - [pi-hooks](https://github.com/prateekmedia/pi-hooks) — Minimal reference extensions
   - [checkpoint](https://github.com/prateekmedia/pi-hooks/tree/main/checkpoint) — Git-based checkpoint system for restoring code state when branching conversations
   - [lsp](https://github.com/prateekmedia/pi-hooks/tree/main/lsp) — Language Server Protocol integration with auto-diagnostics and on-demand queries
@@ -76,7 +78,10 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 
 ## Tools & Utilities
 
+- [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Real-time dashboard for monitoring Claude Code sessions with AI-powered summaries, PR tracking, and multi-repo support
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
+- [gob](https://github.com/juanibiapina/gob) — Process manager for AI agents with background job support and TUI interface
+- [pi-ds](https://github.com/zenobi-us/pi-ds) — TUI design system components for pi-mono extensions with TypeScript support
 
 ---
 
@@ -104,6 +109,12 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 ## Examples & Recipes
 
 - [crossjam/mpr](https://github.com/crossjam/mpr/blob/main/content/pi_coding_agent.md) — Context and writeups referencing the agent
+
+---
+
+## Related Projects
+
+- [claude-plugins-official](https://github.com/anthropics/claude-plugins-official) — Official Anthropic directory of Claude Code plugins with MCP servers, skills, and commands
 
 ---
 
