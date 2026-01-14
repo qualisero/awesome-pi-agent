@@ -162,10 +162,12 @@ This repository includes automated tools for discovering new pi-agent resources 
 - **Puppeteer-based scraper** with forum post support
 - Incremental message tracker with state persistence
 - GitHub link extraction from channels and forums
-- Automatic filtering for pi-agent content
+- Automatic filtering for pi-agent content (plus additional noise filtering in `run.sh` output)
 - Integration with awesome list checking
 
-Run `./discord_scraping/run.sh` to find new resources to add to this list.
+Run `./discord_scraping/run.sh` to find new resources to add to this list. The script reports:
+- new repositories not yet listed in `README.md`
+- new GitHub sub-entry URLs (`tree/` / `blob/`) under repositories already listed (useful for extension collections)
 
 ## CI
 

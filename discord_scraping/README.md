@@ -292,8 +292,13 @@ The `run.sh` script automatically:
 2. Extracts GitHub URLs from results
 3. Compares against the awesome list README
 4. Reports any new repositories found
+5. Reports GitHub **sub-entry URLs** (`tree/` / `blob/`) discovered in the latest run when the repo is already listed but the specific URL is missing
 
 You can then manually validate and add new resources to the awesome list.
+
+### Noise filtering
+
+`run.sh` applies a small **reporting-only** noise filter to reduce obvious false positives (e.g. `pi-mono` forks, GitHub infrastructure links, user attachment buckets). This does **not** affect the underlying scrape data in `data/`.
 
 ## Example Output
 
