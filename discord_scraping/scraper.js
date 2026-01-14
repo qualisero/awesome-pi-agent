@@ -173,32 +173,151 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
 
   // Scroll to load all posts
   console.log(`     Loading posts...`);
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 15; i++) {
     await page.evaluate(() => {
-      window.scrollBy(0, 2000);
+      window.scrollBy(0, 3000);
       const scrollables = document.querySelectorAll('[class*="scroller"], main');
-      scrollables.forEach(el => el.scrollTop = el.scrollHeight);
+      scrollables.forEach(el => {
+        el.scrollTop = el.scrollHeight;
+        el.scrollBy(0, 5000);
+      });
     });
-    await sleep(800);
+    await sleep(1000);
+  }
+  
+  // Debug: Save page content
+  try {
+    const rawText = await page.evaluate(() => document.body.innerText);
+    const debugPath = `/tmp/discord-forum-${forumName}-${Date.now()}.txt`;
+    await fs.writeFile(debugPath, rawText);
+    console.log(`     📝 Page text saved: ${debugPath}`);
+  } catch (err) {
+    console.log(`     ⚠️  Debug save failed: ${err.message}`);
   }
 
-  // Extract GitHub URLs from the forum page
-  const githubUrls = await page.evaluate(() => {
-    const textUrls = (document.body.innerText.match(/https:\/\/github\.com\/[^\s\)\]"'<>]+/g) || []);
+  // Simpler approach: Extract all text content visible on forum page
+  // This includes thread titles, descriptions, and any GitHub URLs
+  const pageData = await page.evaluate(() => {
+    const allText = document.body.innerText || '';
+    const lines = allText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    
+    // Extract GitHub URLs
+    const textUrls = (allText.match(/https:\/\/github\.com\/[^\s\)\]"'<>]+/g) || []);
     const hrefUrls = Array.from(document.querySelectorAll('a[href*="github.com"]')).map(a => a.href);
-    return [...new Set([...textUrls, ...hrefUrls])];
+    const githubUrls = [...new Set([...textUrls, ...hrefUrls])];
+    
+    // Try to identify thread-like structures in the text
+    // Threads usually have a title followed by description/metadata
+    const threads = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Skip very short lines or metadata-like lines
+      if (line.length < 5 || line.match(/^\d+$/) || line.match(/^[\d\s]+ago$/)) {
+        continue;
+      }
+      
+      // Skip common Discord UI text
+      if (['Search', 'New Post', 'All', 'Sort & View', 'help wanted', 'showcase'].includes(line)) {
+        continue;
+      }
+      
+      // Look for lines that seem like thread titles (reasonable length, not URLs)
+      if (line.length > 5 && line.length < 150 && !line.startsWith('http')) {
+        // Get next few lines as potential description
+        const description = lines.slice(i + 1, i + 4).join(' ').substring(0, 200);
+        
+        threads.push({
+          title: line,
+          description: description
+        });
+      }
+    }
+    
+    return {
+      threads: threads,
+      githubUrls: githubUrls,
+      allText: allText.substring(0, 2000) // Keep snippet for debugging
+    };
   });
 
-  console.log(`     Found ${githubUrls.length} GitHub URLs`);
+  console.log(`     Identified ${pageData.threads.length} potential threads, ${pageData.githubUrls.length} GitHub URLs`);
   
-  return githubUrls.map(url => ({
-    channel: forumName,
-    channelId: forumId,
-    author: 'Forum Post',
-    content: `Found in ${forumName} forum`,
-    timestamp: new Date().toISOString(),
-    links: [url]
-  }));
+  // Match GitHub URLs to threads or create standalone entries
+  const forumPosts = [];
+  
+  // Add threads with GitHub URLs
+  pageData.threads.forEach(thread => {
+    const relatedUrls = pageData.githubUrls.filter(url => 
+      pageData.allText.includes(thread.title) && 
+      Math.abs(pageData.allText.indexOf(thread.title) - pageData.allText.indexOf(url)) < 500
+    );
+    
+    if (relatedUrls.length > 0) {
+      forumPosts.push({
+        title: thread.title,
+        content: thread.description,
+        githubUrls: relatedUrls
+      });
+    } else {
+      // Thread without GitHub URL (unreleased)
+      forumPosts.push({
+        title: thread.title,
+        content: thread.description,
+        githubUrls: []
+      });
+    }
+  });
+  
+  // Add any GitHub URLs not matched to threads
+  const matchedUrls = new Set(forumPosts.flatMap(p => p.githubUrls));
+  pageData.githubUrls.forEach(url => {
+    if (!matchedUrls.has(url)) {
+      forumPosts.push({
+        title: '',
+        content: `Found in ${forumName} forum`,
+        githubUrls: [url]
+      });
+    }
+  });
+
+  console.log(`     Found ${forumPosts.length} forum posts`);
+  
+  const results = [];
+  forumPosts.forEach(post => {
+    // Add entries for posts with GitHub URLs
+    if (post.githubUrls.length > 0) {
+      post.githubUrls.forEach(url => {
+        results.push({
+          channel: forumName,
+          channelId: forumId,
+          author: 'Forum Post',
+          title: post.title,
+          content: post.content || `Found in ${forumName} forum`,
+          timestamp: new Date().toISOString(),
+          links: [url]
+        });
+      });
+    }
+    
+    // Also add entries for posts without URLs (upcoming/planned extensions)
+    if (post.title && post.githubUrls.length === 0) {
+      results.push({
+        channel: forumName,
+        channelId: forumId,
+        author: 'Forum Post',
+        title: post.title,
+        content: post.content || 'No GitHub URL yet',
+        timestamp: new Date().toISOString(),
+        links: [],
+        unreleased: true
+      });
+    }
+  });
+  
+  console.log(`     Extracted ${results.length} items (${results.filter(r => r.unreleased).length} unreleased)`);
+  
+  return results;
 }
 
 async function scrape(options = {}) {
@@ -278,7 +397,7 @@ async function scrape(options = {}) {
 
     // Filter for pi-agent related content
     const filteredResults = allResults.filter(result => {
-      const text = (result.content + ' ' + result.links.join(' ')).toLowerCase();
+      const text = ((result.title || '') + ' ' + result.content + ' ' + result.links.join(' ')).toLowerCase();
       return state.filterTerms.some(term => text.includes(term.toLowerCase()));
     });
 
@@ -317,19 +436,24 @@ async function scrape(options = {}) {
     console.log(`  - Pi-agent related: ${filteredResults.length}`);
     console.log(`  - Unique GitHub repos: ${Object.keys(githubRepos).length}`);
 
+    // Extract unreleased forum posts (posts without GitHub URLs)
+    const unreleasedPosts = filteredResults.filter(result => result.unreleased && result.title);
+    
     // Save run data
     await fs.mkdir(runDir, { recursive: true });
     
     await fs.writeFile(path.join(runDir, 'all-messages.json'), JSON.stringify(allResults, null, 2));
     await fs.writeFile(path.join(runDir, 'pi-agent-messages.json'), JSON.stringify(filteredResults, null, 2));
     await fs.writeFile(path.join(runDir, 'repos.json'), JSON.stringify(githubRepos, null, 2));
+    await fs.writeFile(path.join(runDir, 'unreleased-posts.json'), JSON.stringify(unreleasedPosts, null, 2));
     await fs.writeFile(path.join(runDir, 'metadata.json'), JSON.stringify({
       runId,
       timestamp: runTimestamp,
       previousRun: lastRun,
       messagesScanned: allResults.length,
       piAgentRelated: filteredResults.length,
-      githubRepos: Object.keys(githubRepos).length
+      githubRepos: Object.keys(githubRepos).length,
+      unreleasedPosts: unreleasedPosts.length
     }, null, 2));
 
     console.log(`\n💾 Saved to: ${runDir}/`);
@@ -339,6 +463,18 @@ async function scrape(options = {}) {
       for (const [name, info] of Object.entries(githubRepos)) {
         console.log(`  - ${name}`);
         console.log(`    ${info.url}`);
+      }
+    }
+    
+    if (unreleasedPosts.length > 0) {
+      console.log(`\n🔮 Unreleased/Upcoming posts found:\n`);
+      for (const post of unreleasedPosts) {
+        console.log(`  - ${post.title}`);
+        console.log(`    Forum: ${post.channel}`);
+        if (post.content && post.content !== 'No GitHub URL yet') {
+          const preview = post.content.substring(0, 80);
+          console.log(`    ${preview}${post.content.length > 80 ? '...' : ''}`);
+        }
       }
     }
 
