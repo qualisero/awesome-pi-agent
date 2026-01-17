@@ -117,7 +117,9 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 
 ## Related Projects
 
+- [anthropics/claude-code](https://github.com/anthropics/claude-code) — Official Anthropic agentic coding tool that lives in your terminal with natural language commands and git workflow support
 - [claude-plugins-official](https://github.com/anthropics/claude-plugins-official) — Official Anthropic directory of Claude Code plugins with MCP servers, skills, and commands
+- [synthetic-lab/octofriend](https://github.com/synthetic-lab/octofriend) — Open-source coding assistant agent with friendly interactions and codebase understanding
 
 ---
 
