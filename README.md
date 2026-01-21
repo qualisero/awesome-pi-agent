@@ -98,7 +98,7 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 
 ## Themes
 
-*No community themes yet — contributions welcome!*
+- [pi-coding-agent-catppuccin](https://github.com/otahontas/pi-coding-agent-catppuccin) — Catppuccin themes (Latte, Frappé, Macchiato, Mocha)
 
 ---
 
