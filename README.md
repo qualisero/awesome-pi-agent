@@ -1,6 +1,5 @@
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-# awesome-pi-agent
 
 Concise, curated resources for extending and integrating the [pi coding agent](https://shittycodingagent.ai)
 (Yes, it was tempting to call it `shitty-list`).
@@ -11,9 +10,175 @@ Concise, curated resources for extending and integrating the [pi coding agent](h
 
 ---
 
+---
 ## Extensions
 
 Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality by handling events, registering tools, or adding UI components. Previously called "hooks" or "custom tools".
+
+### Configuration & Dotfiles
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+
+- [cloud-research-agent](https://github.com/aadishv/dotfiles/blob/main/.pi/agent/skills/cloud-research-agent/SKILL.md) — AI agent in cloud sandbox for researching GitHub repositories and libraries
+- [LarsEckart/dotfiles](https://github.com/LarsEckart/dotfiles) — Dotfiles with pi agent configuration
+- [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+
+### Context & File Management
+
+- [pi-dcp](https://github.com/zenobi-us/pi-dcp) — Dynamic context pruning extension for intelligent conversation optimization
+- [pi-rlm](https://github.com/Whamp/pi-rlm) — RLM (Recursive Language Model) extension for processing large context files that exceed LLM context windows
+- [checkpoint](https://github.com/prateekmedia/pi-hooks/tree/main/checkpoint) — Git-based checkpoint system for restoring code state when branching conversations
+- [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
+- [handoff](https://github.com/hjanuschka/shitty-extensions#handoffts) — Transfer context to new focused sessions
+
+### Security & Filtering
+
+- [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
+- [security](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/security.ts) — Block dangerous bash commands and protect sensitive paths from writes
+- [permission](https://github.com/prateekmedia/pi-hooks/tree/main/permission) — Layered permission control with four levels (off, low, medium, high)
+- [safe-git](https://github.com/qualisero/rhubarb-pi/blob/main/docs/safe-git.md) — Require approval before dangerous git operations
+
+### Cost & Usage Tracking
+
+- [pi-cost-dashboard](https://github.com/mrexodia/pi-cost-dashboard) — Interactive web dashboard to monitor and analyze API costs
+- [cost-tracker](https://github.com/hjanuschka/shitty-extensions#cost-trackerts) — Session spending analysis from pi logs
+- [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
+- [usage-bar](https://github.com/hjanuschka/shitty-extensions#usage-barts) — AI provider usage statistics with status polling
+- [toolwatch](https://github.com/kcosr/pi-extensions/tree/main/toolwatch) — Tool call auditing and approval system with SQLite logging
+
+### Footer & UI Enhancements
+- [pi-sub](https://github.com/marckrenn/pi-sub) — Usage tracking monorepo with sub-bar UI widget and shared core for provider selection and cache management
+
+- [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
+- [pi-canvas](https://github.com/jyaunches/pi-canvas) — Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
+- [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
+- [status-widget](https://github.com/hjanuschka/shitty-extensions#status-widgetts) — Persistent provider status indicator in footer
+- [session-color](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-color.md) — Colored band in footer to visually distinguish sessions
+- [session-emoji](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-emoji.md) — AI-powered emoji in footer representing conversation context
+- [ultrathink](https://github.com/hjanuschka/shitty-extensions#ultrathinkts) — Rainbow animated effect with Knight Rider shimmer
+
+### Notifications
+
+- [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when agent finishes and waits for input
+- [pi-notify](https://github.com/ferologics/pi-notify) — Native desktop notifications via OSC 777 escape sequence
+- [background-notify](https://github.com/qualisero/rhubarb-pi/blob/main/docs/background-notify.md) — Notifications when tasks complete (audio beep, terminal focus)
+
+### Development Tools
+
+- [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — SCIP code intelligence tools for pi agent
+- [lsp](https://github.com/prateekmedia/pi-hooks/tree/main/lsp) — Language Server Protocol integration with auto-diagnostics and on-demand queries
+- [debug](https://github.com/aliou/pi-extensions/tree/main/extensions/debug) — Session path clipboard utility and debugging tools
+- [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
+- [processes](https://github.com/aliou/pi-extensions/tree/main/extensions/processes) — Process management utilities
+
+### Agent Behavior & Long-running Tasks
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+
+- [ralph-wiggum](https://github.com/tmustier/pi-extensions/tree/main/ralph-wiggum) — Long-running agent loops for iterative development
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+- [agent-guidance](https://github.com/tmustier/pi-extensions/tree/main/agent-guidance) — Agent behavior guidance and instructions
+- [memory-mode](https://github.com/hjanuschka/shitty-extensions#memory-modets) — Save instructions to AGENTS.md with AI-assisted integration
+- [oracle](https://github.com/hjanuschka/shitty-extensions#oraclests) — Get second opinion from alternative AI models without switching contexts
+
+### Themes
+
+- [pi-rose-pine](https://github.com/zenobi-us/pi-rose-pine) — Rose Pine theme for pi TUI
+
+### Games & Experiments
+
+- [arcade](https://github.com/tmustier/pi-extensions/tree/main/arcade) — Arcade-style interactions and games
+
+### Remote & Networking
+
+- [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
+
+### Utilities & Misc
+- [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Extension collection with Reddit post fetching: /reddit subreddit [hot, new, top, rising]
+
+- [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
+- [plan-mode](https://github.com/hjanuschka/shitty-extensions#plan-modets) — Read-only exploration mode for safe code exploration
+### Configuration & Dotfiles
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+
+- [cloud-research-agent](https://github.com/aadishv/dotfiles/blob/main/.pi/agent/skills/cloud-research-agent/SKILL.md) — AI agent in cloud sandbox for researching GitHub repositories and libraries
+- [LarsEckart/dotfiles](https://github.com/LarsEckart/dotfiles) — Dotfiles with pi agent configuration
+- [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+
+### Context & File Management
+
+- [pi-dcp](https://github.com/zenobi-us/pi-dcp) — Dynamic context pruning extension for intelligent conversation optimization
+- [pi-rlm](https://github.com/Whamp/pi-rlm) — RLM (Recursive Language Model) extension for processing large context files that exceed LLM context windows
+- [checkpoint](https://github.com/prateekmedia/pi-hooks/tree/main/checkpoint) — Git-based checkpoint system for restoring code state when branching conversations
+- [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
+- [handoff](https://github.com/hjanuschka/shitty-extensions#handoffts) — Transfer context to new focused sessions
+
+### Security & Filtering
+
+- [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
+- [security](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/security.ts) — Block dangerous bash commands and protect sensitive paths from writes
+- [permission](https://github.com/prateekmedia/pi-hooks/tree/main/permission) — Layered permission control with four levels (off, low, medium, high)
+- [safe-git](https://github.com/qualisero/rhubarb-pi/blob/main/docs/safe-git.md) — Require approval before dangerous git operations
+
+### Cost & Usage Tracking
+
+- [pi-cost-dashboard](https://github.com/mrexodia/pi-cost-dashboard) — Interactive web dashboard to monitor and analyze API costs
+- [cost-tracker](https://github.com/hjanuschka/shitty-extensions#cost-trackerts) — Session spending analysis from pi logs
+- [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
+- [usage-bar](https://github.com/hjanuschka/shitty-extensions#usage-barts) — AI provider usage statistics with status polling
+- [toolwatch](https://github.com/kcosr/pi-extensions/tree/main/toolwatch) — Tool call auditing and approval system with SQLite logging
+
+### Footer & UI Enhancements
+- [pi-sub](https://github.com/marckrenn/pi-sub) — Usage tracking monorepo with sub-bar UI widget and shared core for provider selection and cache management
+
+- [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
+- [pi-canvas](https://github.com/jyaunches/pi-canvas) — Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
+- [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
+- [status-widget](https://github.com/hjanuschka/shitty-extensions#status-widgetts) — Persistent provider status indicator in footer
+- [session-color](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-color.md) — Colored band in footer to visually distinguish sessions
+- [session-emoji](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-emoji.md) — AI-powered emoji in footer representing conversation context
+- [ultrathink](https://github.com/hjanuschka/shitty-extensions#ultrathinkts) — Rainbow animated effect with Knight Rider shimmer
+
+### Notifications
+
+- [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when agent finishes and waits for input
+- [pi-notify](https://github.com/ferologics/pi-notify) — Native desktop notifications via OSC 777 escape sequence
+- [background-notify](https://github.com/qualisero/rhubarb-pi/blob/main/docs/background-notify.md) — Notifications when tasks complete (audio beep, terminal focus)
+
+### Development Tools
+
+- [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — SCIP code intelligence tools for pi agent
+- [lsp](https://github.com/prateekmedia/pi-hooks/tree/main/lsp) — Language Server Protocol integration with auto-diagnostics and on-demand queries
+- [debug](https://github.com/aliou/pi-extensions/tree/main/extensions/debug) — Session path clipboard utility and debugging tools
+- [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
+- [processes](https://github.com/aliou/pi-extensions/tree/main/extensions/processes) — Process management utilities
+
+### Agent Behavior & Long-running Tasks
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+
+- [ralph-wiggum](https://github.com/tmustier/pi-extensions/tree/main/ralph-wiggum) — Long-running agent loops for iterative development
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Collection of commands and skills for Claude/pi including handoff/pickup, release management, GitHub/ghidra tools, and tmux/web-browser skills
+- [agent-guidance](https://github.com/tmustier/pi-extensions/tree/main/agent-guidance) — Agent behavior guidance and instructions
+- [memory-mode](https://github.com/hjanuschka/shitty-extensions#memory-modets) — Save instructions to AGENTS.md with AI-assisted integration
+- [oracle](https://github.com/hjanuschka/shitty-extensions#oraclests) — Get second opinion from alternative AI models without switching contexts
+
+### Themes
+
+- [pi-rose-pine](https://github.com/zenobi-us/pi-rose-pine) — Rose Pine theme for pi TUI
+
+### Games & Experiments
+
+- [arcade](https://github.com/tmustier/pi-extensions/tree/main/arcade) — Arcade-style interactions and games
+
+### Remote & Networking
+
+- [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
+
+### Utilities & Misc
+- [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Extension collection with Reddit post fetching: /reddit subreddit [hot, new, top, rising]
+
+- [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
+- [plan-mode](https://github.com/hjanuschka/shitty-extensions#plan-modets) — Read-only exploration mode for safe code exploration
 
 - [cloud-research-agent](https://github.com/aadishv/dotfiles/blob/main/.pi/agent/skills/cloud-research-agent/SKILL.md) — AI agent in cloud sandbox for researching GitHub repositories and libraries
 - [LarsEckart/dotfiles](https://github.com/LarsEckart/dotfiles) — Dotfiles with pi agent configuration

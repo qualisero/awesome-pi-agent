@@ -18,6 +18,9 @@ const RUNS_DIR = path.join(DATA_DIR, 'runs');
 const AGGREGATE_RESULTS_FILE = path.join(DATA_DIR, 'all-results.json');
 const AGGREGATE_REPOS_FILE = path.join(DATA_DIR, 'all-repos.json');
 const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const CHROME_PROFILE_DIR = `${process.env.HOME}/Library/Application Support/Google/Chrome`;
+const SOURCE_PROFILE_NAME = 'Profile 6';
+const SOURCE_PROFILE_LABEL = 'Generic';
 const PROFILE_DIR = `${process.env.HOME}/.cache/discord-scraper`;
 
 // Default configuration
@@ -72,29 +75,21 @@ async function saveAggregateRepos(repos) {
 }
 
 async function setupBrowser(headless = false) {
-  console.log('Syncing Chrome profile...');
+  console.log(`Syncing Chrome profile: ${SOURCE_PROFILE_LABEL} (${SOURCE_PROFILE_NAME})...`);
   try {
     execSync(`rm -f "${PROFILE_DIR}/SingletonLock" "${PROFILE_DIR}/SingletonSocket" "${PROFILE_DIR}/SingletonCookie"`, { stdio: 'ignore' });
     execSync(
-      `rsync -a --delete \
-        --exclude='SingletonLock' \
-        --exclude='SingletonSocket' \
-        --exclude='SingletonCookie' \
-        --exclude='*/Sessions/*' \
-        --exclude='*/Current Session' \
-        --exclude='*/Current Tabs' \
-        --exclude='*/Last Session' \
-        --exclude='*/Last Tabs' \
-        "${process.env.HOME}/Library/Application Support/Google/Chrome/" "${PROFILE_DIR}/"`,
+      `rsync -a \
+        "${CHROME_PROFILE_DIR}/${SOURCE_PROFILE_NAME}/" "${PROFILE_DIR}/"`,
       { stdio: 'pipe' }
     );
-  } catch {
-    console.log('⚠️  Could not sync profile, using existing');
+  } catch (err) {
+    console.log(`⚠️  Could not sync ${SOURCE_PROFILE_LABEL} profile, using existing (${err.message})`);
   }
 
   return puppeteer.launch({
     executablePath: CHROME_PATH,
-    headless: headless ? 'new' : false,
+    headless: false, // Always run interactively for Discord authentication
     userDataDir: PROFILE_DIR,
     args: [
       '--no-first-run',
@@ -167,9 +162,40 @@ async function scrapeChannel(page, serverId, channelId, channelName, lastTimesta
 
 async function scrapeForumChannel(page, serverId, forumId, forumName) {
   console.log(`     Navigating to forum...`);
-  
+
   await page.goto(`https://discord.com/channels/${serverId}/${forumId}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await sleep(5000);
+  await sleep(3000);
+
+  // Handle Discord app detection modal - click "Continue in Browser" if present
+  console.log(`     Checking for app detection modal...`);
+  try {
+    // Look for the continue button using text content
+    await page.waitForFunction(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      return buttons.some(btn =>
+        btn.textContent &&
+        (btn.textContent.includes('Continue in Browser') ||
+         btn.textContent.includes('Open in Browser'))
+      );
+    }, { timeout: 5000 });
+
+    console.log(`     Found app modal, clicking Continue in Browser...`);
+    await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const continueBtn = buttons.find(btn =>
+        btn.textContent &&
+        (btn.textContent.includes('Continue in Browser') ||
+         btn.textContent.includes('Open in Browser'))
+      );
+      if (continueBtn) continueBtn.click();
+    });
+    await sleep(3000);
+  } catch (err) {
+    // Button might not exist or timeout - that's fine, continue
+    console.log(`     No app modal found or already handled`);
+  }
+
+  await sleep(3000);
 
   // Scroll to load all posts
   console.log(`     Loading posts...`);
@@ -195,15 +221,43 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
     console.log(`     ⚠️  Debug save failed: ${err.message}`);
   }
 
-  // Simpler approach: Extract all text content visible on forum page
+  // Check if we're on a login page - if so, we need to be logged in
+  const isLoggedIn = await page.evaluate(() => {
+    const bodyText = document.body.innerText || '';
+    return !bodyText.includes('Email or Phone Number') &&
+           !bodyText.includes('Log in with QR Code') &&
+           !bodyText.includes('Need an account');
+  });
+
+  if (!isLoggedIn) {
+    console.error(`     ❌ ERROR: Not logged into Discord`);
+    console.error(`     The scraper cannot access Discord forums without an authenticated session.`);
+    console.error(`     Please ensure the Chrome profile has a valid Discord login.`);
+    throw new Error(`Cannot access Discord: not logged in. Check Chrome profile: ${SOURCE_PROFILE_LABEL} (${SOURCE_PROFILE_NAME})`);
+  }
+
+  
+  // Extract all text content visible on forum page
   // This includes thread titles, descriptions, and any GitHub URLs
   const pageData = await page.evaluate(() => {
     const allText = document.body.innerText || '';
     const lines = allText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
     
-    // Extract GitHub URLs
-    const textUrls = (allText.match(/https:\/\/github\.com\/[^\s\)\]"'<>]+/g) || []);
-    const hrefUrls = Array.from(document.querySelectorAll('a[href*="github.com"]')).map(a => a.href);
+    // Extract GitHub URLs - more comprehensive regex
+    const githubUrlPattern = /https?:\/\/github\.com\/[\w-]+\/[\w.-]+(?:\/[\w.-]*)?/gi;
+    const textUrls = (allText.match(githubUrlPattern) || []);
+    
+    // Get all anchor hrefs
+    const hrefUrls = Array.from(document.querySelectorAll('a[href*="github.com"]'))
+      .map(a => {
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('/')) {
+          return 'https://github.com' + href;
+        }
+        return href;
+      })
+      .filter(Boolean);
+    
     const githubUrls = [...new Set([...textUrls, ...hrefUrls])];
     
     // Try to identify thread-like structures in the text
@@ -322,6 +376,13 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
 
 async function scrape(options = {}) {
   const headless = options.headless ?? false;
+  // NOTE: Headless mode does not work with Discord due to authentication requirements
+  // Always use interactive mode for Discord scraping
+  if (headless) {
+    console.warn('⚠️  WARNING: Headless mode does not work with Discord.');
+    console.warn('   Discord requires interactive mode for authentication.');
+    console.warn('   Running in interactive mode instead...\n');
+  }
   const runTimestamp = new Date().toISOString();
   const runId = runTimestamp.replace(/:/g, '-').replace(/\./g, '-');
   const runDir = path.join(RUNS_DIR, runId);

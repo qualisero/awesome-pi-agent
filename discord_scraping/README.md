@@ -16,24 +16,24 @@ npm install
 ```
 
 That's it! The script will:
-- Start Chrome with your Discord session
+- Start Chrome with your Discord session (interactive mode required)
 - Scan regular channels for GitHub links
 - **Scan forum channels for posts** (NEW!)
 - Filter for pi-agent related content
 - Compare with the awesome list
 - Report new repositories
 
+
 ## What's New
 
 **Puppeteer-based scraper** replaces the old CDP-based approach:
 - ✅ **Forum thread support** - Now captures posts from Discord forums
-- ✅ Works in both interactive and headless modes
 - ✅ More reliable page navigation and data extraction
 - ✅ Finds 3-4x more repositories than the old scraper
 
 ## Modes
 
-### Interactive Mode (Default)
+**Interactive Mode (Only Mode Supported)**
 
 ```bash
 ./run.sh
@@ -41,28 +41,20 @@ That's it! The script will:
 node scraper.js
 ```
 
-Opens a visible browser window. Good for:
+Opens a visible browser window. This is the **only mode supported** because Discord requires interactive authentication.
+
+Good for:
 - First-time setup
 - Debugging issues
 - Watching the scan
 
-### Headless Mode
-
-```bash
-./run.sh --headless
-# or
-node scraper.js --headless
-```
-
-Runs in background without visible browser. Good for:
-- Automated/scheduled runs
-- Running while you work
-- CI/CD pipelines
+**Note:** Headless mode is not supported due to Discord's authentication requirements.
 
 ## How It Works
 
 ### First Run
 - Launches Chrome with your profile (preserves Discord login)
+- Opens visible browser window (required for Discord auth)
 - Scans all channels and forum posts
 - Extracts GitHub links
 - Saves state for incremental updates
@@ -93,11 +85,8 @@ Runs in background without visible browser. Good for:
 ## Commands
 
 ```bash
-# Run with visible browser (default)
+# Run with visible browser (only mode supported)
 ./run.sh
-
-# Run in background (headless)
-./run.sh --headless
 
 # Reset all data and start fresh
 node scraper.js --reset
@@ -209,17 +198,14 @@ Add to crontab:
 crontab -e
 
 # Daily at 9 AM
-0 9 * * * cd ~/Projects/awesome-pi-agent/discord_scraping && ./run.sh --headless >> ~/discord-tracker.log 2>&1
 ```
 
 ### Weekly Scan
 
 ```bash
 # Every Monday at 9 AM
-0 9 * * 1 cd ~/Projects/awesome-pi-agent/discord_scraping && ./run.sh --headless >> ~/discord-tracker.log 2>&1
 ```
 
-**Note**: Use `--headless` for automation so it doesn't open browser windows.
 
 ## Troubleshooting
 
@@ -347,9 +333,7 @@ The new Puppeteer scraper is backward compatible:
 **Old files removed:**
 - `track.js` (CDP-based scraper)
 - `start-browser.js`
-- `start-browser-headless.js`
 - `run-tracker.sh`
-- `run-tracker-headless.sh`
 
 **New files:**
 - `scraper.js` (Puppeteer-based scraper)
