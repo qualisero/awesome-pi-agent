@@ -14,6 +14,12 @@ NC='\033[0m'
 
 echo -e "${GREEN}Discord Pi-Agent Resource Tracker${NC}\n"
 
+# Auto-login handling: If headless mode fails due to login, retry in interactive mode
+AUTO_LOGIN=false
+if [[ "$*" == *"--headless"* ]]; then
+    AUTO_LOGIN=true
+fi
+
 # Heuristic noise filter for repo-root URLs.
 # The Discord scraper can surface many GitHub links that are irrelevant for this awesome list
 # (e.g., forks of pi-mono, GitHub infrastructure, user attachment buckets).
@@ -41,8 +47,51 @@ should_ignore_repo() {
     return 1
 }
 
-# Run scraper
-node "$SCRIPT_DIR/scraper.js" "$@"
+# Run scraper with auto-login support
+run_scraper() {
+    local mode="$1"
+    shift
+    
+    if [ "$mode" = "headless" ]; then
+        echo -e "${BLUE}Running in headless mode...${NC}\n"
+        node "$SCRIPT_DIR/scraper.js" --headless "$@"
+    else
+        echo -e "${BLUE}Running in interactive mode...${NC}\n"
+        node "$SCRIPT_DIR/scraper.js" "$@"
+    fi
+}
+
+# Main scraper execution with auto-login
+if [ "$AUTO_LOGIN" = true ]; then
+    # Try headless first
+    set +e  # Don't exit on error
+    run_scraper headless "$@"
+    EXIT_CODE=$?
+    set -e  # Re-enable exit on error
+    
+    if [ $EXIT_CODE -eq 1 ]; then
+        echo -e "\n${YELLOW}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${YELLOW}Login required. Automatically opening Chrome for login...${NC}"
+        echo -e "${YELLOW}═══════════════════════════════════════════════════════${NC}\n"
+        echo -e "${GREEN}Please log in to Discord in the Chrome window that will open.${NC}"
+        echo -e "${GREEN}After logging in, the scraper will continue automatically.${NC}\n"
+        
+        read -p "Press Enter to open Chrome and log in (or Ctrl+C to cancel)..."
+        
+        # Run in interactive mode to allow login
+        if run_scraper interactive; then
+            echo -e "\n${GREEN}✅ Login successful! You can now use --headless mode.${NC}"
+        else
+            echo -e "\n${YELLOW}⚠️  Scraper completed but may need attention.${NC}"
+        fi
+    elif [ $EXIT_CODE -ne 0 ]; then
+        # Different error, propagate it
+        exit $EXIT_CODE
+    fi
+else
+    # Standard run (no auto-login, pass through all args)
+    run_scraper interactive "$@"
+fi
 
 # Check for new repos against awesome list
 echo -e "\n${BLUE}Checking against awesome list...${NC}\n"

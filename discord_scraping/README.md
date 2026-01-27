@@ -188,6 +188,16 @@ The scraper filters for pi-agent related content. Edit in `scraper.js`:
 filterTerms: ["pi-", "agent", "shitty", "coding", ".pi/agent", "/pi-", "extension"]
 ```
 
+### Environment Variables
+
+You can override the default Chrome profile syncing behavior:
+
+- `DISCORD_SCRAPER_PROFILE_DIR`: Target profile directory used by Puppeteer.
+- `DISCORD_SCRAPER_CHROME_SOURCE_DIR`: Source Chrome profile directory to sync from.
+- `DISCORD_SCRAPER_CHROME_PROFILE_NAME`: Specific Chrome profile directory to sync (e.g., `Profile 2`).
+- `DISCORD_SCRAPER_CHROME_PROFILE_EMAIL`: Email for a Chrome profile (auto-resolves via `Local State`).
+- `DISCORD_SCRAPER_CHROME_PATH`: Path to the Chrome executable.
+
 ## Automation
 
 ### Daily Scan (Headless)
@@ -208,6 +218,18 @@ crontab -e
 
 
 ## Troubleshooting
+
+### Discord Login Detection
+
+The scraper automatically detects when Discord is not logged in and will:
+- **In headless mode**: Stop immediately with instructions to run in interactive mode
+- **In interactive mode**: Keep the browser open so you can log in manually
+
+**Signs of being logged out:**
+- Login form fields appearing
+- "Open App" / "Continue in Browser" prompts
+- "We're so excited to see you again!" welcome messages
+- More than 50% of scraped content containing auth prompts
 
 ### Browser doesn't start
 

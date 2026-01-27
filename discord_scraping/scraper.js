@@ -17,11 +17,29 @@ const STATE_FILE = path.join(DATA_DIR, 'state.json');
 const RUNS_DIR = path.join(DATA_DIR, 'runs');
 const AGGREGATE_RESULTS_FILE = path.join(DATA_DIR, 'all-results.json');
 const AGGREGATE_REPOS_FILE = path.join(DATA_DIR, 'all-repos.json');
+<<<<<<< HEAD
 const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const CHROME_PROFILE_DIR = `${process.env.HOME}/Library/Application Support/Google/Chrome`;
 const SOURCE_PROFILE_NAME = 'Profile 6';
 const SOURCE_PROFILE_LABEL = 'Generic';
 const PROFILE_DIR = `${process.env.HOME}/.cache/discord-scraper`;
+=======
+const CHROME_PATH = process.env.DISCORD_SCRAPER_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const DEFAULT_PROFILE_DIR = process.env.HOME
+  ? path.join(process.env.HOME, '.cache/discord-scraper')
+  : path.join('.cache', 'discord-scraper');
+const PROFILE_DIR = process.env.DISCORD_SCRAPER_PROFILE_DIR || DEFAULT_PROFILE_DIR;
+const DEFAULT_CHROME_SOURCE_DIR = process.env.HOME
+  ? path.join(process.env.HOME, 'Library', 'Application Support', 'Google', 'Chrome')
+  : '';
+const CHROME_PROFILE_NAME = process.env.DISCORD_SCRAPER_CHROME_PROFILE_NAME || '';
+const CHROME_PROFILE_EMAIL = process.env.DISCORD_SCRAPER_CHROME_PROFILE_EMAIL || '';
+const CHROME_SOURCE_ROOT = process.env.DISCORD_SCRAPER_CHROME_SOURCE_DIR || DEFAULT_CHROME_SOURCE_DIR;
+const FORUM_SEARCH_TERMS = (process.env.DISCORD_SCRAPER_FORUM_SEARCH_TERMS || '')
+  .split(',')
+  .map(term => term.trim())
+  .filter(Boolean);
+>>>>>>> origin/main
 
 // Default configuration
 const DEFAULT_CONFIG = {
@@ -45,6 +63,27 @@ const DEFAULT_CONFIG = {
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function normalizeUrl(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed.replace(/^http:\/\//i, 'https://');
+  }
+  if (trimmed.startsWith('www.')) {
+    return `https://${trimmed}`;
+  }
+  if (trimmed.match(/^[a-z0-9.-]+\.[a-z]{2,}/i)) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
+}
+
+function extractLinksFromText(text) {
+  const rawUrls = text.match(/(https?:\/\/[^\s\)\]"'<>]+|www\.[^\s\)\]"'<>]+|[a-z0-9.-]+\.[a-z]{2,}\/[^\s\)\]"'<>]+)/gi) || [];
+  return rawUrls.map(normalizeUrl).filter(Boolean);
 }
 
 async function loadState() {
@@ -74,7 +113,37 @@ async function saveAggregateRepos(repos) {
   await fs.writeFile(AGGREGATE_REPOS_FILE, JSON.stringify(repos, null, 2));
 }
 
+async function resolveChromeProfileDirName() {
+  if (CHROME_PROFILE_NAME) {
+    return CHROME_PROFILE_NAME;
+  }
+
+  if (CHROME_PROFILE_EMAIL && CHROME_SOURCE_ROOT) {
+    try {
+      const localStatePath = path.join(CHROME_SOURCE_ROOT, 'Local State');
+      const rawState = await fs.readFile(localStatePath, 'utf8');
+      const localState = JSON.parse(rawState);
+      const infoCache = localState?.profile?.info_cache || {};
+      const matchedProfile = Object.entries(infoCache).find(([, info]) => {
+        const email = info?.user_name || info?.email || '';
+        return email.toLowerCase() === CHROME_PROFILE_EMAIL.toLowerCase();
+      });
+
+      if (matchedProfile) {
+        return matchedProfile[0];
+      }
+
+      console.log(`⚠️  No Chrome profile found for ${CHROME_PROFILE_EMAIL}`);
+    } catch (err) {
+      console.log(`⚠️  Unable to read Chrome Local State: ${err.message}`);
+    }
+  }
+
+  return '';
+}
+
 async function setupBrowser(headless = false) {
+<<<<<<< HEAD
   console.log(`Syncing Chrome profile: ${SOURCE_PROFILE_LABEL} (${SOURCE_PROFILE_NAME})...`);
   try {
     execSync(`rm -f "${PROFILE_DIR}/SingletonLock" "${PROFILE_DIR}/SingletonSocket" "${PROFILE_DIR}/SingletonCookie"`, { stdio: 'ignore' });
@@ -85,10 +154,50 @@ async function setupBrowser(headless = false) {
     );
   } catch (err) {
     console.log(`⚠️  Could not sync ${SOURCE_PROFILE_LABEL} profile, using existing (${err.message})`);
+=======
+  console.log('Syncing Chrome profile...');
+  const profileDirName = await resolveChromeProfileDirName();
+  const userDataDir = PROFILE_DIR;
+  const launchArgs = [
+    '--no-first-run',
+    '--no-default-browser-check',
+    '--disable-blink-features=AutomationControlled',
+    '--window-size=1920,1080'
+  ];
+
+  if (CHROME_SOURCE_ROOT) {
+    try {
+      execSync(`rm -f "${PROFILE_DIR}/SingletonLock" "${PROFILE_DIR}/SingletonSocket" "${PROFILE_DIR}/SingletonCookie"`, { stdio: 'ignore' });
+      execSync(
+        `rsync -a --delete \
+          --exclude='SingletonLock' \
+          --exclude='SingletonSocket' \
+          --exclude='SingletonCookie' \
+          --exclude='*/Sessions/*' \
+          --exclude='*/Current Session' \
+          --exclude='*/Current Tabs' \
+          --exclude='*/Last Session' \
+          --exclude='*/Last Tabs' \
+          "${CHROME_SOURCE_ROOT}/" "${PROFILE_DIR}/"`,
+        { stdio: 'pipe' }
+      );
+      if (profileDirName) {
+        launchArgs.push(`--profile-directory=${profileDirName}`);
+        console.log(`Using Chrome profile directory: ${profileDirName}`);
+      }
+    } catch {
+      console.log('⚠️  Could not sync profile, using existing');
+    }
+  } else {
+    console.log('⚠️  No Chrome source directory configured; skipping profile sync');
+>>>>>>> origin/main
   }
+
+  launchArgs.push('--remote-debugging-port=0');
 
   return puppeteer.launch({
     executablePath: CHROME_PATH,
+<<<<<<< HEAD
     headless: false, // Always run interactively for Discord authentication
     userDataDir: PROFILE_DIR,
     args: [
@@ -98,14 +207,156 @@ async function setupBrowser(headless = false) {
       '--window-size=1920,1080'
     ],
     defaultViewport: { width: 1920, height: 1080 }
+=======
+    headless: headless ? 'new' : false,
+    userDataDir,
+    args: launchArgs,
+    defaultViewport: { width: 1920, height: 1080 },
+    timeout: 60000,
+    protocolTimeout: 120000,
+    pipe: true,
+    dumpio: true
+>>>>>>> origin/main
   });
 }
 
-async function getChannels(page, serverId) {
-  await page.goto(`https://discord.com/channels/${serverId}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await sleep(8000); // Give Discord more time to load sidebar
+/**
+ * Check if the current page is Discord login page or requires authentication
+ */
+async function isLoggedIn(page) {
+  const isLogin = await page.evaluate(() => {
+    const bodyText = document.body.innerText.toLowerCase();
 
-  return page.evaluate((serverId) => {
+    // Check for login page indicators
+    const loginIndicators = [
+      'email or phone number',
+      'email or phone*',
+      'forgot your password',
+      'log in with qr code',
+      'register',
+      'need an account',
+      'we\'re so excited to see you again'
+    ];
+
+    // Check for app redirect/authentication prompts
+    const authPromptIndicators = [
+      'do you want to open this link in your discord app',
+      'open app',
+      'open discord in your browser',
+      'continue in browser',
+      'continue to discord',
+      'log in to discord',
+      'you need to log in'
+    ];
+
+    // Check if we have login form fields
+    const hasLoginFields = !!(
+      document.querySelector('input[type="email"]') ||
+      document.querySelector('input[type="password"]')
+    );
+
+    // Check URL for login
+    const isLoginUrl = window.location.pathname.includes('/login');
+
+    // Check for login-related text (more than 2 matches suggests login page)
+    const loginTextMatches = loginIndicators.filter(indicator => bodyText.includes(indicator)).length;
+    const authPromptMatches = authPromptIndicators.filter(indicator => bodyText.includes(indicator)).length;
+
+    // Check if we see actual Discord channels (logged in successfully)
+    const hasChannelList = !!(
+      document.querySelector('[class*="channels"]') ||
+      document.querySelector('[class*="sidebar"]') ||
+      document.querySelector('[aria-label*="Channels"]')
+    );
+
+    const isAuthenticated = hasLoginFields || isLoginUrl || loginTextMatches >= 1 || authPromptMatches >= 1;
+
+    return {
+      isLogin: isAuthenticated && !hasChannelList,
+      url: window.location.href,
+      hasLoginFields,
+      isLoginUrl,
+      loginTextMatches,
+      authPromptMatches,
+      hasChannelList
+    };
+  });
+
+  return isLogin;
+}
+
+/**
+ * Handle logged out state
+ */
+async function handleLoggedOut(page, headless) {
+  console.log(`\n${'='.repeat(70)}`);
+  console.log(`❌ DISCORD NOT LOGGED IN`);
+  console.log(`${'='.repeat(70)}\n`);
+  console.log(`The scraper has detected that Discord is showing a login page.`);
+  console.log(`This can happen when:\n`);
+  console.log(`  - Chrome profile session has expired`);
+  console.log(`  - Running headless for the first time without prior login`);
+  console.log(`  - Discord logged you out due to inactivity\n`);
+
+  if (headless) {
+    console.log(`🔧 TO FIX:\n`);
+    console.log(`  1. Run the scraper in INTERACTIVE mode to log in:`);
+    console.log(`     cd discord_scraping`);
+    console.log(`     ./run.sh\n`);
+    console.log(`  2. A Chrome window will open - log in to Discord`);
+    console.log(`  3. Let the scraper complete a full scan`);
+    console.log(`  4. Future headless runs will use the saved session\n`);
+    console.log(`${'='.repeat(70)}\n`);
+
+    await page.browser().close();
+    process.exit(1);
+  } else {
+    console.log(`🔧 LOGIN REQUIRED:\n`);
+    console.log(`  The Chrome window is showing the Discord login page.`);
+    console.log(`  Please log in manually in the browser window.`);
+    console.log(`  The scraper will resume automatically once you are logged in.\n`);
+    console.log(`${'='.repeat(70)}\n`);
+
+    // Poll until logged in
+    process.stdout.write('Waiting for login');
+    let dots = 0;
+    
+    while (true) {
+      await sleep(2000);
+      
+      const check = await isLoggedIn(page);
+      if (!check.isLogin) {
+        console.log(`\n\n✅ Login detected! Resuming scraper...\n`);
+        return;
+      }
+      
+      dots = (dots + 1) % 4;
+      process.stdout.write(`\rWaiting for login${'.'.repeat(dots)}   `);
+    }
+  }
+}
+
+async function getChannels(page, serverId, headless = false) {
+  await page.goto(`https://discord.com/channels/${serverId}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await sleep(3000); // Initial wait for page load
+
+  // Check if we're logged out
+  const loginCheck = await isLoggedIn(page);
+  if (loginCheck.isLogin) {
+    console.log(`\n🔍 Login check failed:`, {
+      url: loginCheck.url,
+      hasLoginFields: loginCheck.hasLoginFields,
+      isLoginUrl: loginCheck.isLoginUrl,
+      loginTextMatches: loginCheck.loginTextMatches,
+      authPromptMatches: loginCheck.authPromptMatches,
+      hasChannelList: loginCheck.hasChannelList
+    });
+    await handleLoggedOut(page, headless);
+  }
+
+  await sleep(5000); // Additional wait for Discord to load sidebar
+
+  const channels = await page.evaluate((serverId) => {
     const links = Array.from(document.querySelectorAll(`a[href*="/channels/${serverId}/"]`));
     const channelMap = new Map();
     
@@ -122,6 +373,26 @@ async function getChannels(page, serverId) {
     
     return Array.from(channelMap.values());
   }, serverId);
+
+  if (channels.length === 0) {
+    const loginCheck = await isLoggedIn(page);
+    if (loginCheck.isLogin) {
+      console.log(`\n🔍 Login check failed after channel fetch:`, {
+        url: loginCheck.url,
+        hasLoginFields: loginCheck.hasLoginFields,
+        isLoginUrl: loginCheck.isLoginUrl,
+        loginTextMatches: loginCheck.loginTextMatches,
+        authPromptMatches: loginCheck.authPromptMatches,
+        hasChannelList: loginCheck.hasChannelList
+      });
+      await handleLoggedOut(page, headless);
+    } else {
+      console.log(`\n⚠️  No channels detected after loading server ${serverId}.`);
+      console.log(`   The Discord UI may have changed, or the page did not fully load.`);
+    }
+  }
+
+  return channels;
 }
 
 async function scrapeChannel(page, serverId, channelId, channelName, lastTimestamp) {
@@ -149,7 +420,9 @@ async function scrapeChannel(page, serverId, channelId, channelName, lastTimesta
       
       const author = msg.querySelector('[class*="username"]')?.textContent?.trim() || 'Unknown';
       const content = msg.querySelector('[class*="messageContent"]')?.textContent?.trim() || '';
-      const links = Array.from(msg.querySelectorAll('a[href*="github.com"]')).map(a => a.href);
+      const linkHrefs = Array.from(msg.querySelectorAll('a[href]')).map(a => a.href);
+      const textLinks = extractLinksFromText(content);
+      const links = [...new Set([...linkHrefs, ...textLinks].map(normalizeUrl).filter(Boolean))];
       
       if (links.length > 0) {
         results.push({ author, content: content.substring(0, 500), timestamp, links });
@@ -158,6 +431,48 @@ async function scrapeChannel(page, serverId, channelId, channelName, lastTimesta
     
     return results;
   }, lastTimestamp);
+}
+
+async function scrapeForumThread(page, threadUrl, forumName) {
+  await page.goto(threadUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await sleep(3000);
+
+  for (let i = 0; i < 5; i++) {
+    await page.evaluate(() => {
+      const scroller = document.querySelector('[class*="scroller"], main');
+      if (scroller) {
+        scroller.scrollTop = scroller.scrollHeight;
+      }
+    });
+    await sleep(500);
+  }
+
+  return page.evaluate((forumName) => {
+    const title = document.querySelector('h1, [class*="title"]')?.textContent?.trim() || '';
+    const messages = Array.from(document.querySelectorAll('[id^="chat-messages-"]'));
+    const results = [];
+
+    messages.forEach(msg => {
+      const author = msg.querySelector('[class*="username"]')?.textContent?.trim() || 'Unknown';
+      const content = msg.querySelector('[class*="messageContent"]')?.textContent?.trim() || '';
+      const linkHrefs = Array.from(msg.querySelectorAll('a[href]')).map(a => a.href);
+      const textLinks = extractLinksFromText(content);
+      const links = [...new Set([...linkHrefs, ...textLinks].map(normalizeUrl).filter(Boolean))];
+
+      if (links.length > 0) {
+        results.push({
+          channel: forumName,
+          author,
+          title,
+          content: content.substring(0, 500),
+          timestamp: new Date().toISOString(),
+          links: links
+        });
+      }
+    });
+
+    return { title, results };
+  }, forumName);
 }
 
 async function scrapeForumChannel(page, serverId, forumId, forumName) {
@@ -197,17 +512,54 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
 
   await sleep(3000);
 
+  // Ensure forum is set to show all posts, newest first
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll('button'));
+    const allButton = buttons.find(btn => btn.textContent?.trim() === 'All');
+    if (allButton) allButton.click();
+  });
+  await sleep(1000);
+
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll('button'));
+    const sortButton = buttons.find(btn => btn.textContent?.includes('Sort & View'));
+    if (sortButton) sortButton.click();
+  });
+  await sleep(1000);
+
+  await page.evaluate(() => {
+    const items = Array.from(document.querySelectorAll('div[role="menuitem"], button'));
+    const newest = items.find(item => item.textContent?.trim().toLowerCase() === 'newest');
+    if (newest) newest.click();
+  });
+  await sleep(1000);
+
   // Scroll to load all posts
   console.log(`     Loading posts...`);
-  for (let i = 0; i < 15; i++) {
-    await page.evaluate(() => {
+  let lastHeight = 0;
+  let stagnantRounds = 0;
+  for (let i = 0; i < 30; i++) {
+    const currentHeight = await page.evaluate(() => {
       window.scrollBy(0, 3000);
       const scrollables = document.querySelectorAll('[class*="scroller"], main');
       scrollables.forEach(el => {
         el.scrollTop = el.scrollHeight;
         el.scrollBy(0, 5000);
       });
+      const maxHeight = Array.from(scrollables).reduce((acc, el) => Math.max(acc, el.scrollHeight || 0), 0);
+      return Math.max(document.body.scrollHeight || 0, maxHeight);
     });
+
+    if (currentHeight <= lastHeight) {
+      stagnantRounds += 1;
+      if (stagnantRounds >= 3) {
+        break;
+      }
+    } else {
+      stagnantRounds = 0;
+      lastHeight = currentHeight;
+    }
+
     await sleep(1000);
   }
   
@@ -239,9 +591,10 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
   
   // Extract all text content visible on forum page
   // This includes thread titles, descriptions, and any GitHub URLs
-  const pageData = await page.evaluate(() => {
+  const pageData = await page.evaluate((serverId, forumId) => {
     const allText = document.body.innerText || '';
     const lines = allText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+<<<<<<< HEAD
     
     // Extract GitHub URLs - more comprehensive regex
     const githubUrlPattern = /https?:\/\/github\.com\/[\w-]+\/[\w.-]+(?:\/[\w.-]*)?/gi;
@@ -260,42 +613,94 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
     
     const githubUrls = [...new Set([...textUrls, ...hrefUrls])];
     
+=======
+
+    // Extract URLs (including bare links)
+    const rawTextUrls = (allText.match(/(https?:\/\/[^\s\)\]"'<>]+|www\.[^\s\)\]"'<>]+|[a-z0-9.-]+\.[a-z]{2,}\/[^\s\)\]"'<>]+)/gi) || []);
+    const textUrls = rawTextUrls.map(url => url.startsWith('http') ? url : `https://${url}`);
+    const hrefUrls = Array.from(document.querySelectorAll('a[href]')).map(a => a.href);
+    const githubUrls = [...new Set([...textUrls, ...hrefUrls].map(url => url.replace(/^http:\/\//i, 'https://')))];
+
+    // Thread links from forum cards
+    const threadLinkPattern = new RegExp(`/channels/${serverId}/(?:${forumId}/)?\\d+`);
+    const threadLinks = Array.from(document.querySelectorAll(`a[href*="/channels/${serverId}/"]`))
+      .map(a => a.href)
+      .filter(href => threadLinkPattern.test(href))
+      .filter(href => !href.endsWith(`/${forumId}`));
+
+    const rawThreadIds = Array.from(document.querySelectorAll('[data-list-item-id], [role="link"][data-list-item-id]'))
+      .map(el => el.getAttribute('data-list-item-id') || '')
+      .filter(id => id.includes(`channels___${serverId}`));
+
+    const roleLinks = Array.from(document.querySelectorAll('[role="link"][href]'))
+      .map(el => el.getAttribute('href') || '')
+      .filter(href => href.includes(`/channels/${serverId}/`))
+      .map(href => href.startsWith('http') ? href : `https://discord.com${href}`);
+
+    const threadIds = rawThreadIds
+      .map(id => id.split('channels___')[1])
+      .map(id => id.split('___'))
+      .filter(parts => parts.length >= 2)
+      .map(parts => {
+        const [server, channel, thread] = parts;
+        if (!thread) {
+          if (parts.length === 2) {
+            return `https://discord.com/channels/${server}/${forumId}/${channel}`;
+          }
+          return '';
+        }
+        if (channel !== String(forumId)) return '';
+        return `https://discord.com/channels/${server}/${channel}/${thread}`;
+      })
+      .filter(Boolean);
+
+>>>>>>> origin/main
     // Try to identify thread-like structures in the text
     // Threads usually have a title followed by description/metadata
     const threads = [];
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      
+
       // Skip very short lines or metadata-like lines
       if (line.length < 5 || line.match(/^\d+$/) || line.match(/^[\d\s]+ago$/)) {
         continue;
       }
-      
+
       // Skip common Discord UI text
       if (['Search', 'New Post', 'All', 'Sort & View', 'help wanted', 'showcase'].includes(line)) {
         continue;
       }
-      
+
       // Look for lines that seem like thread titles (reasonable length, not URLs)
       if (line.length > 5 && line.length < 150 && !line.startsWith('http')) {
         // Get next few lines as potential description
         const description = lines.slice(i + 1, i + 4).join(' ').substring(0, 200);
-        
+
         threads.push({
           title: line,
           description: description
         });
       }
     }
-    
+
     return {
       threads: threads,
       githubUrls: githubUrls,
+      threadLinks: Array.from(new Set([...threadLinks, ...roleLinks, ...threadIds])),
+      rawThreadIds: rawThreadIds,
       allText: allText.substring(0, 2000) // Keep snippet for debugging
     };
-  });
+  }, serverId, forumId);
 
   console.log(`     Identified ${pageData.threads.length} potential threads, ${pageData.githubUrls.length} GitHub URLs`);
+  console.log(`     Thread link candidates: ${pageData.threadLinks.length}`);
+  if (pageData.rawThreadIds?.length) {
+    const debugPath = `/tmp/discord-forum-${forumName}-thread-ids-${Date.now()}.txt`;
+    await fs.writeFile(debugPath, pageData.rawThreadIds.join('\n'));
+    console.log(`     🧭 Thread ids saved: ${debugPath} (${pageData.rawThreadIds.length})`);
+  } else {
+    console.log(`     ⚠️  No raw thread ids detected in DOM.`);
+  }
   
   // Match GitHub URLs to threads or create standalone entries
   const forumPosts = [];
@@ -336,7 +741,7 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
   });
 
   console.log(`     Found ${forumPosts.length} forum posts`);
-  
+
   const results = [];
   forumPosts.forEach(post => {
     // Add entries for posts with GitHub URLs
@@ -353,7 +758,7 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
         });
       });
     }
-    
+
     // Also add entries for posts without URLs (upcoming/planned extensions)
     if (post.title && post.githubUrls.length === 0) {
       results.push({
@@ -368,9 +773,97 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
       });
     }
   });
-  
+
+  const seenThreads = new Set();
+
+  if (pageData.threadLinks.length > 0) {
+    console.log(`     Visiting ${pageData.threadLinks.length} forum threads for link extraction...`);
+    for (const threadUrl of pageData.threadLinks) {
+      if (seenThreads.has(threadUrl)) continue;
+      seenThreads.add(threadUrl);
+
+      try {
+        const threadData = await scrapeForumThread(page, threadUrl, forumName);
+        threadData.results.forEach(entry => {
+          results.push({
+            channel: forumName,
+            channelId: forumId,
+            author: entry.author,
+            title: entry.title,
+            content: entry.content,
+            timestamp: entry.timestamp,
+            links: entry.links
+          });
+        });
+      } catch (err) {
+        console.log(`     ⚠️  Thread scrape failed (${threadUrl}): ${err.message}`);
+      }
+    }
+  } else {
+    console.log(`     ⚠️  No forum thread links detected to scrape.`);
+  }
+
+  if (FORUM_SEARCH_TERMS.length > 0) {
+    console.log(`     Searching forum cards for: ${FORUM_SEARCH_TERMS.join(', ')}`);
+    const forumUrl = `https://discord.com/channels/${serverId}/${forumId}`;
+
+    for (const term of FORUM_SEARCH_TERMS) {
+      try {
+        const matches = await page.$$eval('li[data-item-role="item"]', (items, searchTerm) => {
+          const termLower = searchTerm.toLowerCase();
+          return items
+            .map((item, index) => ({ index, text: item.innerText?.toLowerCase() || '' }))
+            .filter(entry => entry.text.includes(termLower))
+            .map(entry => entry.index);
+        }, term);
+
+        if (matches.length === 0) {
+          console.log(`     ⚠️  No forum cards matched "${term}"`);
+          continue;
+        }
+
+        console.log(`     Found ${matches.length} cards matching "${term}"`);
+        for (const matchIndex of matches) {
+          const cards = await page.$$('li[data-item-role="item"]');
+          const card = cards[matchIndex];
+          if (!card) continue;
+
+          const currentUrl = page.url();
+          await card.click();
+          await page.waitForFunction(prev => location.href !== prev, { timeout: 10000 }, currentUrl);
+          const threadUrl = page.url();
+
+          if (!seenThreads.has(threadUrl)) {
+            seenThreads.add(threadUrl);
+            try {
+              const threadData = await scrapeForumThread(page, threadUrl, forumName);
+              threadData.results.forEach(entry => {
+                results.push({
+                  channel: forumName,
+                  channelId: forumId,
+                  author: entry.author,
+                  title: entry.title,
+                  content: entry.content,
+                  timestamp: entry.timestamp,
+                  links: entry.links
+                });
+              });
+            } catch (err) {
+              console.log(`     ⚠️  Thread scrape failed (${threadUrl}): ${err.message}`);
+            }
+          }
+
+          await page.goto(forumUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+          await sleep(2000);
+        }
+      } catch (err) {
+        console.log(`     ⚠️  Forum card search failed for "${term}": ${err.message}`);
+      }
+    }
+  }
+
   console.log(`     Extracted ${results.length} items (${results.filter(r => r.unreleased).length} unreleased)`);
-  
+
   return results;
 }
 
@@ -414,7 +907,7 @@ async function scrape(options = {}) {
       console.log(`📡 Server: ${serverInfo.name} (${serverId})\n`);
 
       // Get all channels
-      const channels = await getChannels(page, serverId);
+      const channels = await getChannels(page, serverId, headless);
       const forumIds = Object.keys(serverInfo.forumChannels || {});
       const regularChannels = channels.filter(c => !forumIds.includes(c.id));
       
@@ -491,6 +984,25 @@ async function scrape(options = {}) {
         }
       });
     });
+
+    // Check if we scraped login/auth prompts instead of real content
+    if (allResults.length > 0) {
+      const suspiciousContentCount = allResults.filter(result => {
+        const content = result.content.toLowerCase();
+        return content.includes('open app') || 
+               content.includes('continue in browser') ||
+               content.includes('log in') ||
+               content.includes('email or phone') ||
+               content.includes('forgot your password');
+      }).length;
+
+      const suspiciousRatio = suspiciousContentCount / allResults.length;
+      
+      if (suspiciousRatio > 0.5) {
+        console.log(`\n⚠️  WARNING: ${Math.round(suspiciousRatio * 100)}% of scraped content appears to be login/auth prompts\n`);
+        await handleLoggedOut(page, headless);
+      }
+    }
 
     console.log(`\n📊 Results:`);
     console.log(`  - Total messages with GitHub links: ${allResults.length}`);

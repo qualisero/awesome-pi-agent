@@ -12,3 +12,6 @@ discord-pi-resources/
 
 # macOS
 .DS_Store
+
+# Agent working docs
+AGENT_DOCS/

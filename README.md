@@ -19,7 +19,6 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 ### ⚙️ Configuration & Dotfiles
 
 - [cloud-research-agent](https://github.com/aadishv/dotfiles/blob/main/.pi/agent/skills/cloud-research-agent/SKILL.md) — AI agent in cloud sandbox for researching GitHub repositories and libraries
-- [LarsEckart/dotfiles](https://github.com/LarsEckart/dotfiles) — Dotfiles with pi agent configuration
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
   - [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
   - [security](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/security.ts) — Block dangerous bash commands and protect sensitive paths from writes
