@@ -41,6 +41,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
 - [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when the agent finishes and waits for input
+- [pi-notify](https://github.com/ferologics/pi-notify) — Native desktop notifications via OSC 777 escape sequence
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
 - [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
@@ -50,6 +51,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [session-color](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-color.md) — Colored band in footer to visually distinguish sessions
   - [safe-git](https://github.com/qualisero/rhubarb-pi/blob/main/docs/safe-git.md) — Require approval before dangerous git operations
 - [pi-dcp](https://github.com/zenobi-us/pi-dcp) — Dynamic context pruning extension for intelligent conversation optimization
+- [pi-rlm](https://github.com/Whamp/pi-rlm) — RLM (Recursive Language Model) extension for processing large context files that exceed LLM context windows
 - [shitty-extensions](https://github.com/hjanuschka/shitty-extensions) — Community extensions collection
   - [cost-tracker](https://github.com/hjanuschka/shitty-extensions#cost-trackerts) — Session spending analysis from pi logs
   - [handoff](https://github.com/hjanuschka/shitty-extensions#handoffts) — Transfer context to new focused sessions
@@ -112,6 +114,7 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 ## Examples & Recipes
 
 - [crossjam/mpr](https://github.com/crossjam/mpr/blob/main/content/pi_coding_agent.md) — Context and writeups referencing the agent
+- [eddoapp](https://github.com/walterra/eddoapp) — GTD-inspired todo and time tracking app with pi-coding-agent skills and extensions for AI-assisted workflows
 
 ---
 
