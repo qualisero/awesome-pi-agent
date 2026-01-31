@@ -15,6 +15,7 @@ Concise, curated resources for extending and integrating the [pi coding agent](h
 
 Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality by handling events, registering tools, or adding UI components. Previously called "hooks" or "custom tools".
 
+- [agent-stuff (mitsupi)](https://github.com/mitsuhiko/agent-stuff) — Skills and extensions for pi (answer, review, loop, files, todos, codex-tuning, whimsical)
 - [cloud-research-agent](https://github.com/aadishv/dotfiles/blob/main/.pi/agent/skills/cloud-research-agent/SKILL.md) — AI agent in cloud sandbox for researching GitHub repositories and libraries
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
   - [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
@@ -71,6 +72,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 
 Skills are reusable workflows described in natural language (SKILL.md format) that guide the agent through complex tasks.
 
+- [agent-stuff (mitsupi)](https://github.com/mitsuhiko/agent-stuff) — Skills and extensions for pi (commit, changelog, GitHub, web browser, tmux, Sentry, and more)
 - [pi-amplike](https://github.com/pasky/pi-amplike) — Pi skills for web search and webpage extraction (Jina APIs)
 - [pi-skills](https://github.com/badlogic/pi-skills) — Community skills collection
   - [brave-search](https://github.com/badlogic/pi-skills/tree/main/brave-search) — Web search and content extraction via Brave Search API
