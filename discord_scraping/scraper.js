@@ -376,26 +376,47 @@ async function scrapeChannel(page, serverId, channelId, channelName, lastTimesta
   }
 
   return page.evaluate((lastTs) => {
+    function normalizeUrl(url) {
+      if (!url) return '';
+      const trimmed = url.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return trimmed.replace(/^http:\/\//i, 'https://');
+      }
+      if (trimmed.startsWith('www.')) {
+        return `https://${trimmed}`;
+      }
+      if (trimmed.match(/^[a-z0-9.-]+\.[a-z]{2,}/i)) {
+        return `https://${trimmed}`;
+      }
+      return trimmed;
+    }
+
+    function extractLinksFromText(text) {
+      const rawUrls = text.match(/(https?:\/\/[^\s\)\]"'<>]+|www\.[^\s\)\]"'<>]+|[a-z0-9.-]+\.[a-z]{2,}\/[^\s\)\]"'<>]+)/gi) || [];
+      return rawUrls.map(normalizeUrl).filter(Boolean);
+    }
+
     const results = [];
     const messages = document.querySelectorAll('[id^="chat-messages-"]');
-    
+
     messages.forEach(msg => {
       const timeEl = msg.querySelector('time');
       const timestamp = timeEl?.getAttribute('datetime') || new Date().toISOString();
-      
+
       if (lastTs && new Date(timestamp) <= new Date(lastTs)) return;
-      
+
       const author = msg.querySelector('[class*="username"]')?.textContent?.trim() || 'Unknown';
       const content = msg.querySelector('[class*="messageContent"]')?.textContent?.trim() || '';
       const linkHrefs = Array.from(msg.querySelectorAll('a[href]')).map(a => a.href);
       const textLinks = extractLinksFromText(content);
       const links = [...new Set([...linkHrefs, ...textLinks].map(normalizeUrl).filter(Boolean))];
-      
+
       if (links.length > 0) {
         results.push({ author, content: content.substring(0, 500), timestamp, links });
       }
     });
-    
+
     return results;
   }, lastTimestamp);
 }
@@ -415,6 +436,27 @@ async function scrapeForumThread(page, threadUrl, forumName) {
   }
 
   return page.evaluate((forumName) => {
+    function normalizeUrl(url) {
+      if (!url) return '';
+      const trimmed = url.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return trimmed.replace(/^http:\/\//i, 'https://');
+      }
+      if (trimmed.startsWith('www.')) {
+        return `https://${trimmed}`;
+      }
+      if (trimmed.match(/^[a-z0-9.-]+\.[a-z]{2,}/i)) {
+        return `https://${trimmed}`;
+      }
+      return trimmed;
+    }
+
+    function extractLinksFromText(text) {
+      const rawUrls = text.match(/(https?:\/\/[^\s\)\]"'<>]+|www\.[^\s\)\]"'<>]+|[a-z0-9.-]+\.[a-z]{2,}\/[^\s\)\]"'<>]+)/gi) || [];
+      return rawUrls.map(normalizeUrl).filter(Boolean);
+    }
+
     const title = document.querySelector('h1, [class*="title"]')?.textContent?.trim() || '';
     const messages = Array.from(document.querySelectorAll('[id^="chat-messages-"]'));
     const results = [];
