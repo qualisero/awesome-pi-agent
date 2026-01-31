@@ -48,7 +48,13 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [session-emoji](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-emoji.md) — AI-powered emoji in footer representing conversation context
   - [session-color](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-color.md) — Colored band in footer to visually distinguish sessions
   - [safe-git](https://github.com/qualisero/rhubarb-pi/blob/main/docs/safe-git.md) — Require approval before dangerous git operations
+- [ben-vargas/pi-packages](https://github.com/ben-vargas/pi-packages) — Packages for pi (extensions, skills, prompt templates, themes)
+- [ferologics/pi-notify](https://github.com/ferologics/pi-notify) — Native desktop notifications via OSC 777
+- [ogulcancelik/pi-ghostty-theme-sync](https://github.com/ogulcancelik/pi-ghostty-theme-sync) — Sync Ghostty terminal theme with pi session
+- [ogulcancelik/pi-sketch](https://github.com/ogulcancelik/pi-sketch) — Quick sketch pad - draw in browser, send to models
 - [pi-dcp](https://github.com/zenobi-us/pi-dcp) — Dynamic context pruning extension for intelligent conversation optimization
+- [pi-screenshots-picker](https://github.com/Graffioh/pi-screenshots-picker) — Screenshot picker extension for better screenshot selections
+- [pi-super-curl](https://github.com/Graffioh/pi-super-curl) — Extension to empower curl requests with coding agent capabilities
 - [shitty-extensions](https://github.com/hjanuschka/shitty-extensions) — Community extensions collection
   - [cost-tracker](https://github.com/hjanuschka/shitty-extensions#cost-trackerts) — Session spending analysis from pi logs
   - [handoff](https://github.com/hjanuschka/shitty-extensions#handoffts) — Transfer context to new focused sessions
@@ -65,6 +71,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 
 Skills are reusable workflows described in natural language (SKILL.md format) that guide the agent through complex tasks.
 
+- [pi-amplike](https://github.com/pasky/pi-amplike) — Pi skills for web search and webpage extraction (Jina APIs)
 - [pi-skills](https://github.com/badlogic/pi-skills) — Community skills collection
   - [brave-search](https://github.com/badlogic/pi-skills/tree/main/brave-search) — Web search and content extraction via Brave Search API
   - [browser-tools](https://github.com/badlogic/pi-skills/tree/main/browser-tools) — Interactive browser automation via Chrome DevTools Protocol
@@ -97,7 +104,7 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 
 ## Themes
 
-*No community themes yet — contributions welcome!*
+- [pi-rose-pine](https://github.com/zenobi-us/pi-rose-pine) — Rose Pine themes for pi coding agent (main, moon, dawn variants)
 
 ---
 
@@ -105,6 +112,7 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 
 - [pi-acp](https://github.com/svkozak/pi-acp) — ACP adapter for pi agent
 - [pi-config](https://github.com/vtemian/pi-config) — Project config example
+- [pi-synthetic](https://github.com/aliou/pi-synthetic) — Pi provider for Synthetic (open-source models via Anthropic-compatible API)
 
 ---
 
