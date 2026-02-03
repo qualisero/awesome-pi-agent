@@ -93,6 +93,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [gob](https://github.com/juanibiapina/gob) — Process manager for AI agents with background job support and TUI interface
 - [PiSwarm](https://github.com/lsj5031/PiSwarm) — Parallel GitHub issue and PR processing using the `pi` agent and Git worktrees
 - [pi-ds](https://github.com/zenobi-us/pi-ds) — TUI design system components for pi-mono extensions with TypeScript support
+- [Pi Session Manager](https://github.com/Dwsy/pi-session-manager) — Tauri2 desktop app for browsing, searching, and managing Pi Agent sessions with analytics dashboard and 2-layer cache
 - [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Collection of pi extensions including Reddit integration and more
 - [pi-sub](https://github.com/marckrenn/pi-sub) — Monorepo for usage tracking extensions with shared core (sub-core, sub-bar UI widget)
 
