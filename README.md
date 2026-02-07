@@ -44,6 +44,10 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
 - [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
+- [pi-extensions](https://github.com/richardgill/pi-extensions) — Collection of extensions for pi coding agent
+  - [files](https://github.com/richardgill/pi-extensions/tree/main/extensions/files) — Browse and open files mentioned in conversation
+  - [skill-task](https://github.com/richardgill/pi-extensions/tree/main/extensions/skill-task) — Route `/skill:` commands to task tool when skills opt in
+  - [task-tool](https://github.com/richardgill/pi-extensions/tree/main/extensions/task-tool) — Run isolated pi subprocesses for single, chain, or parallel work
 - [rhubarb-pi](https://github.com/qualisero/rhubarb-pi) — Collection of small extensions for pi agent
   - [background-notify](https://github.com/qualisero/rhubarb-pi/blob/main/docs/background-notify.md) — Notifications when tasks complete (audio beep, terminal focus)
   - [session-emoji](https://github.com/qualisero/rhubarb-pi/blob/main/docs/session-emoji.md) — AI-powered emoji in footer representing conversation context
@@ -88,6 +92,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 
 ## Tools & Utilities
 
+- [CodexBar](https://github.com/steipete/CodexBar) — macOS menu bar app for tracking AI coding tool usage (session + weekly limits, reset timers) — supports Codex, Claude, Cursor, Gemini, and more
 - [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Real-time dashboard for monitoring Claude Code sessions with AI-powered summaries, PR tracking, and multi-repo support
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
 - [gob](https://github.com/juanibiapina/gob) — Process manager for AI agents with background job support and TUI interface
