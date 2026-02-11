@@ -101,6 +101,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [pi-ds](https://github.com/zenobi-us/pi-ds) — TUI design system components for pi-mono extensions with TypeScript support
 - [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Collection of pi extensions including Reddit integration and more
 - [pi-sub](https://github.com/marckrenn/pi-sub) — Monorepo for usage tracking extensions with shared core (sub-core, sub-bar UI widget)
+- [pi-voice](https://github.com/yukukotani/pi-voice) - Headless voice interface for the Pi Coding Agent
 
 ---
 
