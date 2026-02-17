@@ -39,6 +39,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [ralph-wiggum](https://github.com/tmustier/pi-extensions/tree/main/ralph-wiggum) — Long-running agent loops for iterative development
   - [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
   - [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
+- [pi-idle-notify](https://github.com/wschwab/pi-idle-notify) — Minimal push notifications on idle (can link to custom noises)
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
 - [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when the agent finishes and waits for input
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
