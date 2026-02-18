@@ -40,6 +40,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
   - [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
+- [pi-memory](https://github.com/tickernelz/pi-memory) — Memory management extension for long-term memory, identity, user profile, and daily logging
 - [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when the agent finishes and waits for input
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
