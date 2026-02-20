@@ -41,7 +41,9 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
 - [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when the agent finishes and waits for input
+- [pi-notify-pp](https://github.com/kim0/pi-notify-pp) — Rich notification extension with tool stats, error tracking, and OSC 777 support
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
+- [pi-prompt-template-model](https://github.com/nicobailon/pi-prompt-template-model) — Prompt templates with model/skill/thinking frontmatter and auto-restore
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
 - [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
 - [pi-extensions](https://github.com/richardgill/pi-extensions) — Collection of extensions for pi coding agent
@@ -96,12 +98,15 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Real-time dashboard for monitoring Claude Code sessions with AI-powered summaries, PR tracking, and multi-repo support
 - [nono](https://github.com/lukehinds/nono) — Secure, kernel-enforced capability sandbox for AI agents (Landlock on Linux, Seatbelt on macOS) — blocks dangerous commands and enforces OS-level security primitives
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
+- [gondolin](https://github.com/earendil-works/gondolin) — Linux micro-VM sandbox with programmable network/filesystem and Pi integration
 - [gob](https://github.com/juanibiapina/gob) — Process manager for AI agents with background job support and TUI interface
 - [PiSwarm](https://github.com/lsj5031/PiSwarm) — Parallel GitHub issue and PR processing using the `pi` agent and Git worktrees
+- [task-factory](https://github.com/patleeman/task-factory) — Queue-first work orchestrator for Pi with planning, execution skills, and web UI
 - [pi-ds](https://github.com/zenobi-us/pi-ds) — TUI design system components for pi-mono extensions with TypeScript support
-- [pi-mcp-tools](https://github.com/tickernelz/pi-mcp-tools) — Universal MCP (Model Context Protocol) tools extension for pi coding agent with local/remote server support
+- [pi-mobile](https://github.com/ayagmar/pi-mobile) — Android client for Pi coding agent with session management over Tailscale
 - [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Collection of pi extensions including Reddit integration and more
 - [pi-sub](https://github.com/marckrenn/pi-sub) — Monorepo for usage tracking extensions with shared core (sub-core, sub-bar UI widget)
+- [pi-mcp-tools](https://github.com/tickernelz/pi-mcp-tools) — Universal MCP (Model Context Protocol) tools extension for pi coding agent with local/remote server support
 
 ---
 
