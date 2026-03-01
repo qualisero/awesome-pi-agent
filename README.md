@@ -81,6 +81,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 
 - [agent-stuff (mitsupi)](https://github.com/mitsuhiko/agent-stuff) — Skills and extensions for pi (commit, changelog, GitHub, web browser, tmux, Sentry, and more)
 - [pi-amplike](https://github.com/pasky/pi-amplike) — Pi skills for web search and webpage extraction (Jina APIs)
+- [meyhem-search](https://github.com/c5huracan/meyhem/tree/main/meyhem-search) — Web search with outcome tracking via Meyhem (no API key needed)
 - [pi-skills](https://github.com/badlogic/pi-skills) — Community skills collection
   - [brave-search](https://github.com/badlogic/pi-skills/tree/main/brave-search) — Web search and content extraction via Brave Search API
   - [browser-tools](https://github.com/badlogic/pi-skills/tree/main/browser-tools) — Interactive browser automation via Chrome DevTools Protocol
