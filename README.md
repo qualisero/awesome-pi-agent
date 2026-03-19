@@ -20,6 +20,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
   - [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
   - [security](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/security.ts) — Block dangerous bash commands and protect sensitive paths from writes
+- [pi-auto-theme](https://git.sr.ht/~whynothugo/pi-auto-theme) — Automatically switch dark or light theme based on terminal configuration.
 - [pi-extensions](https://github.com/aliou/pi-extensions) — Collection of debugging and utility extensions
   - [debug](https://github.com/aliou/pi-extensions/tree/main/extensions/debug) — Session path clipboard utility and debugging tools
   - [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
