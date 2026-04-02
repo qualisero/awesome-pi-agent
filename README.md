@@ -60,7 +60,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [ogulcancelik/pi-ghostty-theme-sync](https://github.com/ogulcancelik/pi-ghostty-theme-sync) — Sync Ghostty terminal theme with pi session
 - [ogulcancelik/pi-sketch](https://github.com/ogulcancelik/pi-sketch) — Quick sketch pad - draw in browser, send to models
 - [pi-dcp](https://github.com/zenobi-us/pi-dcp) — Dynamic context pruning extension for intelligent conversation optimization
-- [pi-governance](https://github.com/Grwnd-AI/pi-governance) — Governance, RBAC, DLP, audit, and HITL for pi agents with YAML policy engine, bash classifier, config self-protection, and OpenClaw plugin
+- [pi-governance](https://github.com/dtmirizzi/pi-governance) — Governance, RBAC, DLP, audit, slopsquatting protection, and HITL for pi agents with YAML policy engine, bash classifier, config self-protection, and OpenClaw plugin
 - [pi-gui](https://github.com/VVander/pi-gui) — GUI extension providing visual interface for pi agent
 - [pi-screenshots-picker](https://github.com/Graffioh/pi-screenshots-picker) — Screenshot picker extension for better screenshot selections
 - [pi-super-curl](https://github.com/Graffioh/pi-super-curl) — Extension to empower curl requests with coding agent capabilities
