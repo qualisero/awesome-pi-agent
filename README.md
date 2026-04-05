@@ -60,6 +60,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [ogulcancelik/pi-ghostty-theme-sync](https://github.com/ogulcancelik/pi-ghostty-theme-sync) — Sync Ghostty terminal theme with pi session
 - [ogulcancelik/pi-sketch](https://github.com/ogulcancelik/pi-sketch) — Quick sketch pad - draw in browser, send to models
 - [pi-dcp](https://github.com/zenobi-us/pi-dcp) — Dynamic context pruning extension for intelligent conversation optimization
+- [pi-elixir](https://github.com/dannote/pi-elixir) — BEAM runtime tools for live Elixir/Phoenix introspection (eval, docs, SQL, process inspection, supervision trees)
 - [pi-gui](https://github.com/VVander/pi-gui) — GUI extension providing visual interface for pi agent
 - [pi-screenshots-picker](https://github.com/Graffioh/pi-screenshots-picker) — Screenshot picker extension for better screenshot selections
 - [pi-super-curl](https://github.com/Graffioh/pi-super-curl) — Extension to empower curl requests with coding agent capabilities
