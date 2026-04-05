@@ -111,6 +111,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [pi-mobile](https://github.com/ayagmar/pi-mobile) — Android client for Pi coding agent with session management over Tailscale
 - [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Collection of pi extensions including Reddit integration and more
 - [pi-sub](https://github.com/marckrenn/pi-sub) — Monorepo for usage tracking extensions with shared core (sub-core, sub-bar UI widget)
+- [pi-voice](https://github.com/yukukotani/pi-voice) - Headless voice interface for the Pi Coding Agent
 
 ---
 
