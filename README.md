@@ -111,6 +111,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [pi-mobile](https://github.com/ayagmar/pi-mobile) — Android client for Pi coding agent with session management over Tailscale
 - [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Collection of pi extensions including Reddit integration and more
 - [pi-sub](https://github.com/marckrenn/pi-sub) — Monorepo for usage tracking extensions with shared core (sub-core, sub-bar UI widget)
+- [Untether](https://github.com/littlebearapps/untether) — Telegram bridge for Pi (and 5 other agents). Send tasks by voice, stream progress, track context compaction, and manage sessions remotely
 
 ---
 
