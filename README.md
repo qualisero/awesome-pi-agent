@@ -45,6 +45,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
 - [pi-prompt-template-model](https://github.com/nicobailon/pi-prompt-template-model) — Prompt templates with model/skill/thinking frontmatter and auto-restore
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
+- [pi-rewind](https://github.com/arpagon/pi-rewind) — Checkpoint/rewind with `/rewind` command, diff preview, 1-per-turn checkpoints, safe restore, redo stack (npm: `pi-rewind`)
 - [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
 - [pi-extensions](https://github.com/richardgill/pi-extensions) — Collection of extensions for pi coding agent
   - [files](https://github.com/richardgill/pi-extensions/tree/main/extensions/files) — Browse and open files mentioned in conversation
