@@ -102,6 +102,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [gondolin](https://github.com/earendil-works/gondolin) — Linux micro-VM sandbox with programmable network/filesystem and Pi integration
 - [gob](https://github.com/juanibiapina/gob) — Process manager for AI agents with background job support and TUI interface
 - [lima](https://github.com/lima-vm/lima) — Linux micro-VM environment for isolated agent execution
+- [losingle/pi-mono](https://github.com/losingle/pi-mono) — Fork of pi-mono with custom modifications and enhancements
 - [nono](https://github.com/lukehinds/nono) — Secure, kernel-enforced capability sandbox for AI agents (Landlock on Linux, Seatbelt on macOS) — blocks dangerous commands and enforces OS-level security primitives
 - [opencode-dynamic-context-pruning](https://github.com/Opencode-DCP/opencode-dynamic-context-pruning) — Context optimization system for extended conversations
 - [PiSwarm](https://github.com/lsj5031/PiSwarm) — Parallel GitHub issue and PR processing using the `pi` agent and Git worktrees
@@ -140,6 +141,7 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 - [.agents (ivanrvpereira)](https://github.com/ivanrvpereira/.agents) — Agent configurations and template examples
 - [crossjam/mpr](https://github.com/crossjam/mpr/blob/main/content/pi_coding_agent.md) — Context and writeups referencing the agent
 - [gondolin-nix](https://github.com/luizribeiro/gondolin-nix) — Gondolin configuration using Nix for reproducible environments
+- [zenobi-us/dotfiles](https://github.com/zenobi-us/dotfiles) — User dotfiles and configuration examples for pi agent setup
 
 ---
 

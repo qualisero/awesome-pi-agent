@@ -189,12 +189,34 @@ async function setupBrowser(headless = false) {
 
 /**
  * Check if the current page is Discord login page or requires authentication
+ * IMPROVED: Check for actual logged-in indicators more robustly
  */
 async function isLoggedIn(page) {
   const isLogin = await page.evaluate(() => {
     const bodyText = document.body.innerText.toLowerCase();
 
-    // Check for login page indicators
+    // More direct checks for Discord UI
+    const hasSidebar = !!(
+      document.querySelector('[class*="sidebar"]') ||
+      document.querySelector('[class*="nav"]') ||
+      document.querySelector('nav')
+    );
+
+    const hasChannelLinks = !!document.querySelector('a[href*="/channels/"]');
+
+    const hasMessages = !!document.querySelector('[id^="chat-messages-"], [class*="message"]');
+
+    const hasGuildList = !!document.querySelector('[class*="guild"]');
+
+    // Check for login form (this proves we're NOT logged in)
+    const hasLoginFields = !!(
+      document.querySelector('input[type="email"]') ||
+      document.querySelector('input[type="password"]')
+    );
+
+    const isLoginUrl = window.location.pathname.includes('/login');
+    
+    // Login page indicators
     const loginIndicators = [
       'email or phone number',
       'email or phone*',
@@ -204,48 +226,27 @@ async function isLoggedIn(page) {
       'need an account',
       'we\'re so excited to see you again'
     ];
-
-    // Check for app redirect/authentication prompts
-    const authPromptIndicators = [
-      'do you want to open this link in your discord app',
-      'open app',
-      'open discord in your browser',
-      'continue in browser',
-      'continue to discord',
-      'log in to discord',
-      'you need to log in'
-    ];
-
-    // Check if we have login form fields
-    const hasLoginFields = !!(
-      document.querySelector('input[type="email"]') ||
-      document.querySelector('input[type="password"]')
-    );
-
-    // Check URL for login
-    const isLoginUrl = window.location.pathname.includes('/login');
-
-    // Check for login-related text (more than 2 matches suggests login page)
     const loginTextMatches = loginIndicators.filter(indicator => bodyText.includes(indicator)).length;
-    const authPromptMatches = authPromptIndicators.filter(indicator => bodyText.includes(indicator)).length;
 
-    // Check if we see actual Discord channels (logged in successfully)
-    const hasChannelList = !!(
-      document.querySelector('[class*="channels"]') ||
-      document.querySelector('[class*="sidebar"]') ||
-      document.querySelector('[aria-label*="Channels"]')
-    );
-
-    const isAuthenticated = hasLoginFields || isLoginUrl || loginTextMatches >= 1 || authPromptMatches >= 1;
+    // We're logged in if we see Discord UI elements AND NOT on login page
+    // Multiple conditions must be true for high confidence
+    const discordUIPresent = (hasSidebar || hasChannelLinks || hasGuildList);
+    const notOnLoginPage = !hasLoginFields && !isLoginUrl && loginTextMatches === 0;
+    const isLoggedIn = discordUIPresent && notOnLoginPage;
 
     return {
-      isLogin: isAuthenticated && !hasChannelList,
+      isLogin: !isLoggedIn, // Return true if NOT logged in
       url: window.location.href,
+      hasSidebar,
+      hasChannelLinks,
+      hasMessages,
+      hasGuildList,
       hasLoginFields,
       isLoginUrl,
       loginTextMatches,
-      authPromptMatches,
-      hasChannelList
+      discordUIPresent,
+      notOnLoginPage,
+      confident: isLoggedIn ? 'HIGH' : 'LOW'
     };
   });
 
@@ -253,7 +254,7 @@ async function isLoggedIn(page) {
 }
 
 /**
- * Handle logged out state
+ * Handle logged out state - IMPROVED with aggressive waiting
  */
 async function handleLoggedOut(page, headless) {
   console.log(`\n${'='.repeat(70)}`);
@@ -284,45 +285,91 @@ async function handleLoggedOut(page, headless) {
     console.log(`  The scraper will resume automatically once you are logged in.\n`);
     console.log(`${'='.repeat(70)}\n`);
 
-    // Poll until logged in
+    // IMPROVED: Poll more frequently and aggressively until logged in
     process.stdout.write('Waiting for login');
     let dots = 0;
+    let checkCount = 0;
+    const MAX_WAIT_MINUTES = 10;
+    const MAX_CHECKS = (MAX_WAIT_MINUTES * 60 * 1000) / 500; // Check every 0.5 second for up to 10 minutes
     
-    while (true) {
-      await sleep(2000);
+    while (checkCount < MAX_CHECKS) {
+      await sleep(500); // Check every 0.5 second (more frequent)
       
       const check = await isLoggedIn(page);
+      checkCount++;
+      
+      // Log more detailed status every 20 checks (every 10 seconds)
+      if (checkCount % 20 === 0) {
+        console.log(`\n  [Check ${checkCount}] State: ${JSON.stringify({
+          hasSidebar: check.hasSidebar,
+          hasChannelLinks: check.hasChannelLinks,
+          hasGuildList: check.hasGuildList,
+          confident: check.confident
+        })}`);
+      }
+      
       if (!check.isLogin) {
-        console.log(`\n\n✅ Login detected! Resuming scraper...\n`);
+        console.log(`\n\n✅ Login detected! Discord UI confirmed. Resuming scraper...\n`);
+        await sleep(2000); // Give Discord a moment to fully settle
         return;
       }
       
       dots = (dots + 1) % 4;
       process.stdout.write(`\rWaiting for login${'.'.repeat(dots)}   `);
     }
+    
+    // Timeout after 10 minutes
+    console.log(`\n\n⏱️  Login timeout after ${MAX_WAIT_MINUTES} minutes`);
+    console.log(`\nPlease ensure you are:
+  1. Connected to the internet
+  2. Logged into Discord in the browser
+  3. On the Discord home page (not stuck on login page)\n`);
+    await page.browser().close();
+    process.exit(1);
   }
 }
 
 async function getChannels(page, serverId, headless = false) {
+  console.log(`\n📡 Server: The Shitty Coders Club (${serverId})\n`);
+  
+  // Navigate to server
   await page.goto(`https://discord.com/channels/${serverId}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await sleep(3000); // Initial wait for page load
+  
+  // IMPROVED: Wait longer for Discord UI to fully load
+  console.log('⏳ Waiting for Discord UI to load...');
+  await sleep(3000);
 
-  // Check if we're logged out
-  const loginCheck = await isLoggedIn(page);
+  // Check if we're logged out - use MORE aggressive criteria
+  let loginCheck = await isLoggedIn(page);
   if (loginCheck.isLogin) {
-    console.log(`\n🔍 Login check failed:`, {
-      url: loginCheck.url,
-      hasLoginFields: loginCheck.hasLoginFields,
-      isLoginUrl: loginCheck.isLoginUrl,
-      loginTextMatches: loginCheck.loginTextMatches,
-      authPromptMatches: loginCheck.authPromptMatches,
-      hasChannelList: loginCheck.hasChannelList
+    console.log(`\n🔍 Initial login check: NOT LOGGED IN\n`, {
+      hasSidebar: loginCheck.hasSidebar,
+      hasChannelLinks: loginCheck.hasChannelLinks,
+      hasGuildList: loginCheck.hasGuildList,
+      confident: loginCheck.confident
     });
     await handleLoggedOut(page, headless);
   }
 
-  await sleep(5000); // Additional wait for Discord to load sidebar
+  // IMPROVED: Wait even longer for sidebar and channels to load after login confirmed
+  console.log('⏳ Waiting for channels to load...');
+  await sleep(5000);
+  
+  // Re-check after extended wait
+  loginCheck = await isLoggedIn(page);
+  if (loginCheck.isLogin) {
+    console.log(`\n🔍 Second login check after 5s wait: STILL NOT LOGGED IN\n`);
+    console.log(`Reload page and wait for Discord to stabilize...`);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await sleep(5000);
+    loginCheck = await isLoggedIn(page);
+    if (loginCheck.isLogin) {
+      await handleLoggedOut(page, headless);
+    }
+  }
 
+  // Now extract channels - should be fully loaded
+  console.log('📋 Extracting channels from sidebar...');
   const channels = await page.evaluate((serverId) => {
     const links = Array.from(document.querySelectorAll(`a[href*="/channels/${serverId}/"]`));
     const channelMap = new Map();
@@ -360,6 +407,99 @@ async function getChannels(page, serverId, headless = false) {
   }
 
   return channels;
+}
+
+/**
+ * PHASE 2: Exhaust all forum threads by scrolling
+ * Loads all thread cards from the forum by scrolling to the bottom
+ */
+async function exhaustForumThreads(page, serverId, forumId) {
+  console.log(`     ⏳ Exhausting forum thread list (scrolling to load all threads)...`);
+  
+  let lastHeight = 0;
+  let stagnantRounds = 0;
+  let threadCountBefore = 0;
+  let iteration = 0;
+  
+  // Get initial thread count
+  threadCountBefore = await page.evaluate(() => {
+    const threads = document.querySelectorAll('[role="link"][data-list-item-id]');
+    return threads.length;
+  });
+  console.log(`     Initial threads visible: ${threadCountBefore}`);
+  
+  // Scroll aggressively until no new threads appear
+  for (let i = 0; i < 40; i++) {
+    iteration = i;
+    const currentHeight = await page.evaluate(() => {
+      // Scroll main content area
+      const scrollables = document.querySelectorAll('[class*="scroller"], main, [role="main"]');
+      scrollables.forEach(el => {
+        el.scrollTop = el.scrollHeight;
+        el.scrollBy(0, 5000);
+      });
+      
+      // Also scroll window
+      window.scrollBy(0, 3000);
+      
+      // Get maximum scroll height
+      const maxHeight = Array.from(scrollables).reduce((acc, el) => {
+        return Math.max(acc, el.scrollHeight || 0);
+      }, 0);
+      
+      return Math.max(document.body.scrollHeight || 0, window.innerHeight + window.scrollY, maxHeight);
+    });
+
+    // Get current thread count
+    const currentThreadCount = await page.evaluate(() => {
+      const threads = document.querySelectorAll('[role="link"][data-list-item-id]');
+      return threads.length;
+    });
+    
+    console.log(`     Scroll ${i + 1}: ${currentThreadCount} threads found, scroll height ${currentHeight}`);
+    
+    if (currentHeight <= lastHeight && currentThreadCount === threadCountBefore) {
+      stagnantRounds++;
+      if (stagnantRounds >= 3) {
+        console.log(`     ✅ No new threads after 3 consecutive scrolls. All threads loaded.`);
+        break;
+      }
+    } else {
+      stagnantRounds = 0;
+      lastHeight = currentHeight;
+      threadCountBefore = currentThreadCount;
+    }
+
+    await sleep(500);
+  }
+  
+  // Get all thread links
+  const threadLinks = await page.evaluate((serverId, forumId) => {
+    const links = new Set();
+    
+    // Method 1: From data-list-item-id attributes
+    const items = Array.from(document.querySelectorAll('[role="link"][data-list-item-id]'));
+    items.forEach(item => {
+      const href = item.getAttribute('href') || item.getAttribute('data-href');
+      if (href) {
+        const fullUrl = href.startsWith('http') ? href : `https://discord.com${href}`;
+        links.add(fullUrl);
+      }
+    });
+    
+    // Method 2: Direct link elements in forum threads
+    const threadCardLinks = Array.from(document.querySelectorAll(`a[href*="/channels/${serverId}/"]`)).map(a => a.href);
+    threadCardLinks.forEach(link => links.add(link));
+    
+    return Array.from(links).filter(link => {
+      // Filter out non-thread links
+      const match = link.match(/\/channels\/\d+\/(\d+)\/(\d+)/);
+      return match && match[1] === String(forumId);
+    });
+  }, serverId, forumId);
+  
+  console.log(`     Found ${threadLinks.length} total thread links`);
+  return threadLinks;
 }
 
 async function scrapeChannel(page, serverId, channelId, channelName, lastTimestamp) {
@@ -421,67 +561,113 @@ async function scrapeChannel(page, serverId, channelId, channelName, lastTimesta
   }, lastTimestamp);
 }
 
-async function scrapeForumThread(page, threadUrl, forumName) {
-  await page.goto(threadUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await sleep(3000);
+async function scrapeForumThread(page, threadUrl, forumName, retryCount = 0) {
+  const MAX_RETRIES = 2;
+  
+  try {
+    await page.goto(threadUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await sleep(3000);
 
-  for (let i = 0; i < 5; i++) {
-    await page.evaluate(() => {
-      const scroller = document.querySelector('[class*="scroller"], main');
-      if (scroller) {
-        scroller.scrollTop = scroller.scrollHeight;
+    // PHASE 3: Aggressive scrolling to load all messages
+    console.log(`       ⏳ Loading all messages in thread (aggressive scroll)...`);
+    let messageCount = 0;
+    let previousMessageCount = 0;
+    let noNewMessagesCount = 0;
+    const MAX_SCROLLS = 20;
+    
+    for (let i = 0; i < MAX_SCROLLS; i++) {
+      const currentMessageCount = await page.evaluate(() => {
+        const messages = document.querySelectorAll('[id^="chat-messages-"]');
+        return messages.length;
+      });
+      
+      console.log(`       Scroll ${i + 1}: ${currentMessageCount} messages loaded`);
+      messageCount = currentMessageCount;
+      
+      // Check if we found new messages
+      if (currentMessageCount === previousMessageCount) {
+        noNewMessagesCount++;
+        if (noNewMessagesCount >= 2) {
+          console.log(`       ✅ No new messages after 2 consecutive scrolls. All messages loaded.`);
+          break;
+        }
+      } else {
+        noNewMessagesCount = 0;
+        previousMessageCount = currentMessageCount;
       }
-    });
-    await sleep(500);
-  }
-
-  return page.evaluate((forumName) => {
-    function normalizeUrl(url) {
-      if (!url) return '';
-      const trimmed = url.trim();
-      if (!trimmed) return '';
-      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-        return trimmed.replace(/^http:\/\//i, 'https://');
-      }
-      if (trimmed.startsWith('www.')) {
-        return `https://${trimmed}`;
-      }
-      if (trimmed.match(/^[a-z0-9.-]+\.[a-z]{2,}/i)) {
-        return `https://${trimmed}`;
-      }
-      return trimmed;
-    }
-
-    function extractLinksFromText(text) {
-      const rawUrls = text.match(/(https?:\/\/[^\s\)\]"'<>]+|www\.[^\s\)\]"'<>]+|[a-z0-9.-]+\.[a-z]{2,}\/[^\s\)\]"'<>]+)/gi) || [];
-      return rawUrls.map(normalizeUrl).filter(Boolean);
-    }
-
-    const title = document.querySelector('h1, [class*="title"]')?.textContent?.trim() || '';
-    const messages = Array.from(document.querySelectorAll('[id^="chat-messages-"]'));
-    const results = [];
-
-    messages.forEach(msg => {
-      const author = msg.querySelector('[class*="username"]')?.textContent?.trim() || 'Unknown';
-      const content = msg.querySelector('[class*="messageContent"]')?.textContent?.trim() || '';
-      const linkHrefs = Array.from(msg.querySelectorAll('a[href]')).map(a => a.href);
-      const textLinks = extractLinksFromText(content);
-      const links = [...new Set([...linkHrefs, ...textLinks].map(normalizeUrl).filter(Boolean))];
-
-      if (links.length > 0) {
-        results.push({
-          channel: forumName,
-          author,
-          title,
-          content: content.substring(0, 500),
-          timestamp: new Date().toISOString(),
-          links: links
+      
+      // Scroll aggressively
+      await page.evaluate(() => {
+        const scrollers = document.querySelectorAll('[class*="scroller"], main');
+        scrollers.forEach(scroller => {
+          scroller.scrollTop = scroller.scrollHeight;
+          scroller.scrollBy(0, 5000);
         });
-      }
-    });
+      });
+      
+      await sleep(1000); // Wait longer between scrolls for Discord to render
+    }
 
-    return { title, results };
-  }, forumName);
+    return page.evaluate((forumName) => {
+      function normalizeUrl(url) {
+        if (!url) return '';
+        const trimmed = url.trim();
+        if (!trimmed) return '';
+        if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+          return trimmed.replace(/^http:\/\//i, 'https://');
+        }
+        if (trimmed.startsWith('www.')) {
+          return `https://${trimmed}`;
+        }
+        if (trimmed.match(/^[a-z0-9.-]+\.[a-z]{2,}/i)) {
+          return `https://${trimmed}`;
+        }
+        return trimmed;
+      }
+
+      function extractLinksFromText(text) {
+        const rawUrls = text.match(/(https?:\/\/[^\s\)\]"'<>]+|www\.[^\s\)\]"'<>]+|[a-z0-9.-]+\.[a-z]{2,}\/[^\s\)\]"'<>]+)/gi) || [];
+        return rawUrls.map(normalizeUrl).filter(Boolean);
+      }
+
+      const title = document.querySelector('h1, [class*="title"]')?.textContent?.trim() || '';
+      const messages = Array.from(document.querySelectorAll('[id^="chat-messages-"]'));
+      const results = [];
+
+      messages.forEach(msg => {
+        const author = msg.querySelector('[class*="username"]')?.textContent?.trim() || 'Unknown';
+        const content = msg.querySelector('[class*="messageContent"]')?.textContent?.trim() || '';
+        
+        // PHASE 5: Better URL extraction - href first, then text
+        const linkHrefs = Array.from(msg.querySelectorAll('a[href]')).map(a => a.href);
+        const textLinks = extractLinksFromText(content);
+        const links = [...new Set([...linkHrefs, ...textLinks].map(normalizeUrl).filter(Boolean))];
+
+        if (links.length > 0) {
+          results.push({
+            channel: forumName,
+            author,
+            title,
+            content: content.substring(0, 500),
+            timestamp: new Date().toISOString(),
+            links: links
+          });
+        }
+      });
+
+      return { title, results, messageCount: messages.length };
+    }, forumName);
+  } catch (err) {
+    // PHASE 6: Better error handling with retries
+    if (retryCount < MAX_RETRIES) {
+      console.log(`       ⚠️  Thread failed (${err.message}), retrying... (${retryCount + 1}/${MAX_RETRIES})`);
+      await sleep(2000);
+      return scrapeForumThread(page, threadUrl, forumName, retryCount + 1);
+    } else {
+      console.log(`       ❌ Thread scrape failed after ${MAX_RETRIES} retries: ${err.message}`);
+      throw err;
+    }
+  }
 }
 
 async function scrapeForumChannel(page, serverId, forumId, forumName) {
@@ -512,35 +698,9 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
   });
   await sleep(1000);
 
-  // Scroll to load all posts
-  console.log(`     Loading posts...`);
-  let lastHeight = 0;
-  let stagnantRounds = 0;
-  for (let i = 0; i < 30; i++) {
-    const currentHeight = await page.evaluate(() => {
-      window.scrollBy(0, 3000);
-      const scrollables = document.querySelectorAll('[class*="scroller"], main');
-      scrollables.forEach(el => {
-        el.scrollTop = el.scrollHeight;
-        el.scrollBy(0, 5000);
-      });
-      const maxHeight = Array.from(scrollables).reduce((acc, el) => Math.max(acc, el.scrollHeight || 0), 0);
-      return Math.max(document.body.scrollHeight || 0, maxHeight);
-    });
+  // PHASE 2: Use the exhaustForumThreads function to get ALL thread links
+  const threadLinks = await exhaustForumThreads(page, serverId, forumId);
 
-    if (currentHeight <= lastHeight) {
-      stagnantRounds += 1;
-      if (stagnantRounds >= 3) {
-        break;
-      }
-    } else {
-      stagnantRounds = 0;
-      lastHeight = currentHeight;
-    }
-
-    await sleep(1000);
-  }
-  
   // Debug: Save page content
   try {
     const rawText = await page.evaluate(() => document.body.innerText);
@@ -551,181 +711,57 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
     console.log(`     ⚠️  Debug save failed: ${err.message}`);
   }
 
-  // Simpler approach: Extract all text content visible on forum page
-  // This includes thread titles, descriptions, and any GitHub URLs
-  const pageData = await page.evaluate((serverId, forumId) => {
-    const allText = document.body.innerText || '';
-    const lines = allText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  // Extract any GitHub URLs visible on the forum page itself
+  const pageGithubUrls = await page.evaluate(() => {
+    function normalizeUrl(url) {
+      if (!url) return '';
+      const trimmed = url.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return trimmed.replace(/^http:\/\//i, 'https://');
+      }
+      if (trimmed.startsWith('www.')) {
+        return `https://${trimmed}`;
+      }
+      if (trimmed.match(/^[a-z0-9.-]+\.[a-z]{2,}/i)) {
+        return `https://${trimmed}`;
+      }
+      return trimmed;
+    }
 
-    // Extract URLs (including bare links)
+    const allText = document.body.innerText || '';
+    
+    // Extract URLs from text
     const rawTextUrls = (allText.match(/(https?:\/\/[^\s\)\]"'<>]+|www\.[^\s\)\]"'<>]+|[a-z0-9.-]+\.[a-z]{2,}\/[^\s\)\]"'<>]+)/gi) || []);
     const textUrls = rawTextUrls.map(url => url.startsWith('http') ? url : `https://${url}`);
-    const hrefUrls = Array.from(document.querySelectorAll('a[href]')).map(a => a.href);
-    const githubUrls = [...new Set([...textUrls, ...hrefUrls].map(url => url.replace(/^http:\/\//i, 'https://')))];
-
-    // Thread links from forum cards
-    const threadLinkPattern = new RegExp(`/channels/${serverId}/(?:${forumId}/)?\\d+`);
-    const threadLinks = Array.from(document.querySelectorAll(`a[href*="/channels/${serverId}/"]`))
-      .map(a => a.href)
-      .filter(href => threadLinkPattern.test(href))
-      .filter(href => !href.endsWith(`/${forumId}`));
-
-    const rawThreadIds = Array.from(document.querySelectorAll('[data-list-item-id], [role="link"][data-list-item-id]'))
-      .map(el => el.getAttribute('data-list-item-id') || '')
-      .filter(id => id.includes(`channels___${serverId}`));
-
-    const roleLinks = Array.from(document.querySelectorAll('[role="link"][href]'))
-      .map(el => el.getAttribute('href') || '')
-      .filter(href => href.includes(`/channels/${serverId}/`))
-      .map(href => href.startsWith('http') ? href : `https://discord.com${href}`);
-
-    const threadIds = rawThreadIds
-      .map(id => id.split('channels___')[1])
-      .map(id => id.split('___'))
-      .filter(parts => parts.length >= 2)
-      .map(parts => {
-        const [server, channel, thread] = parts;
-        if (!thread) {
-          if (parts.length === 2) {
-            return `https://discord.com/channels/${server}/${forumId}/${channel}`;
-          }
-          return '';
-        }
-        if (channel !== String(forumId)) return '';
-        return `https://discord.com/channels/${server}/${channel}/${thread}`;
-      })
-      .filter(Boolean);
-
-    // Try to identify thread-like structures in the text
-    // Threads usually have a title followed by description/metadata
-    const threads = [];
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-
-      // Skip very short lines or metadata-like lines
-      if (line.length < 5 || line.match(/^\d+$/) || line.match(/^[\d\s]+ago$/)) {
-        continue;
-      }
-
-      // Skip common Discord UI text
-      if (['Search', 'New Post', 'All', 'Sort & View', 'help wanted', 'showcase'].includes(line)) {
-        continue;
-      }
-
-      // Look for lines that seem like thread titles (reasonable length, not URLs)
-      if (line.length > 5 && line.length < 150 && !line.startsWith('http')) {
-        // Get next few lines as potential description
-        const description = lines.slice(i + 1, i + 4).join(' ').substring(0, 200);
-
-        threads.push({
-          title: line,
-          description: description
-        });
-      }
-    }
-
-    return {
-      threads: threads,
-      githubUrls: githubUrls,
-      threadLinks: Array.from(new Set([...threadLinks, ...roleLinks, ...threadIds])),
-      rawThreadIds: rawThreadIds,
-      allText: allText.substring(0, 2000) // Keep snippet for debugging
-    };
-  }, serverId, forumId);
-
-  console.log(`     Identified ${pageData.threads.length} potential threads, ${pageData.githubUrls.length} GitHub URLs`);
-  console.log(`     Thread link candidates: ${pageData.threadLinks.length}`);
-  if (pageData.rawThreadIds?.length) {
-    const debugPath = `/tmp/discord-forum-${forumName}-thread-ids-${Date.now()}.txt`;
-    await fs.writeFile(debugPath, pageData.rawThreadIds.join('\n'));
-    console.log(`     🧭 Thread ids saved: ${debugPath} (${pageData.rawThreadIds.length})`);
-  } else {
-    console.log(`     ⚠️  No raw thread ids detected in DOM.`);
-  }
-  
-  // Match GitHub URLs to threads or create standalone entries
-  const forumPosts = [];
-  
-  // Add threads with GitHub URLs
-  pageData.threads.forEach(thread => {
-    const relatedUrls = pageData.githubUrls.filter(url => 
-      pageData.allText.includes(thread.title) && 
-      Math.abs(pageData.allText.indexOf(thread.title) - pageData.allText.indexOf(url)) < 500
-    );
     
-    if (relatedUrls.length > 0) {
-      forumPosts.push({
-        title: thread.title,
-        content: thread.description,
-        githubUrls: relatedUrls
-      });
-    } else {
-      // Thread without GitHub URL (unreleased)
-      forumPosts.push({
-        title: thread.title,
-        content: thread.description,
-        githubUrls: []
-      });
-    }
-  });
-  
-  // Add any GitHub URLs not matched to threads
-  const matchedUrls = new Set(forumPosts.flatMap(p => p.githubUrls));
-  pageData.githubUrls.forEach(url => {
-    if (!matchedUrls.has(url)) {
-      forumPosts.push({
-        title: '',
-        content: `Found in ${forumName} forum`,
-        githubUrls: [url]
-      });
-    }
+    // Extract URLs from hrefs
+    const hrefUrls = Array.from(document.querySelectorAll('a[href]')).map(a => a.href);
+    
+    // Combine and deduplicate
+    const allUrls = [...new Set([...textUrls, ...hrefUrls].map(normalizeUrl).filter(Boolean))];
+    
+    // Filter for GitHub URLs - NO FILTER TERMS HERE (PHASE 4)
+    return allUrls.filter(url => url.includes('github.com'));
   });
 
-  console.log(`     Found ${forumPosts.length} forum posts`);
+  console.log(`     Found ${pageGithubUrls.length} GitHub URLs on forum page itself`);
 
+  // PHASE 6: Improved error handling - track failed threads
+  const failedThreads = [];
   const results = [];
-  forumPosts.forEach(post => {
-    // Add entries for posts with GitHub URLs
-    if (post.githubUrls.length > 0) {
-      post.githubUrls.forEach(url => {
-        results.push({
-          channel: forumName,
-          channelId: forumId,
-          author: 'Forum Post',
-          title: post.title,
-          content: post.content || `Found in ${forumName} forum`,
-          timestamp: new Date().toISOString(),
-          links: [url]
-        });
-      });
-    }
-
-    // Also add entries for posts without URLs (upcoming/planned extensions)
-    if (post.title && post.githubUrls.length === 0) {
-      results.push({
-        channel: forumName,
-        channelId: forumId,
-        author: 'Forum Post',
-        title: post.title,
-        content: post.content || 'No GitHub URL yet',
-        timestamp: new Date().toISOString(),
-        links: [],
-        unreleased: true
-      });
-    }
-  });
-
   const seenThreads = new Set();
 
-  if (pageData.threadLinks.length > 0) {
-    console.log(`     Visiting ${pageData.threadLinks.length} forum threads for link extraction...`);
-    for (const threadUrl of pageData.threadLinks) {
+  if (threadLinks.length > 0) {
+    console.log(`     Visiting ${threadLinks.length} forum threads for link extraction...`);
+    for (const threadUrl of threadLinks) {
       if (seenThreads.has(threadUrl)) continue;
       seenThreads.add(threadUrl);
 
       try {
         const threadData = await scrapeForumThread(page, threadUrl, forumName);
         threadData.results.forEach(entry => {
+          // PHASE 4: NO FILTERING HERE - collect ALL links found
           results.push({
             channel: forumName,
             channelId: forumId,
@@ -736,74 +772,38 @@ async function scrapeForumChannel(page, serverId, forumId, forumName) {
             links: entry.links
           });
         });
+        console.log(`       ✅ Thread OK: ${threadData.messageCount} messages, ${threadData.results.length} links`);
       } catch (err) {
-        console.log(`     ⚠️  Thread scrape failed (${threadUrl}): ${err.message}`);
+        console.log(`       ❌ Thread FAILED: ${threadUrl}`);
+        failedThreads.push({ url: threadUrl, error: err.message });
       }
     }
   } else {
     console.log(`     ⚠️  No forum thread links detected to scrape.`);
   }
 
-  if (FORUM_SEARCH_TERMS.length > 0) {
-    console.log(`     Searching forum cards for: ${FORUM_SEARCH_TERMS.join(', ')}`);
-    const forumUrl = `https://discord.com/channels/${serverId}/${forumId}`;
+  // Add any GitHub URLs found on the forum page directly
+  pageGithubUrls.forEach(url => {
+    results.push({
+      channel: forumName,
+      channelId: forumId,
+      author: 'Forum Page',
+      title: 'GitHub URL found on forum',
+      content: `Found in ${forumName} forum`,
+      timestamp: new Date().toISOString(),
+      links: [url]
+    });
+  });
 
-    for (const term of FORUM_SEARCH_TERMS) {
-      try {
-        const matches = await page.$$eval('li[data-item-role="item"]', (items, searchTerm) => {
-          const termLower = searchTerm.toLowerCase();
-          return items
-            .map((item, index) => ({ index, text: item.innerText?.toLowerCase() || '' }))
-            .filter(entry => entry.text.includes(termLower))
-            .map(entry => entry.index);
-        }, term);
-
-        if (matches.length === 0) {
-          console.log(`     ⚠️  No forum cards matched "${term}"`);
-          continue;
-        }
-
-        console.log(`     Found ${matches.length} cards matching "${term}"`);
-        for (const matchIndex of matches) {
-          const cards = await page.$$('li[data-item-role="item"]');
-          const card = cards[matchIndex];
-          if (!card) continue;
-
-          const currentUrl = page.url();
-          await card.click();
-          await page.waitForFunction(prev => location.href !== prev, { timeout: 10000 }, currentUrl);
-          const threadUrl = page.url();
-
-          if (!seenThreads.has(threadUrl)) {
-            seenThreads.add(threadUrl);
-            try {
-              const threadData = await scrapeForumThread(page, threadUrl, forumName);
-              threadData.results.forEach(entry => {
-                results.push({
-                  channel: forumName,
-                  channelId: forumId,
-                  author: entry.author,
-                  title: entry.title,
-                  content: entry.content,
-                  timestamp: entry.timestamp,
-                  links: entry.links
-                });
-              });
-            } catch (err) {
-              console.log(`     ⚠️  Thread scrape failed (${threadUrl}): ${err.message}`);
-            }
-          }
-
-          await page.goto(forumUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
-          await sleep(2000);
-        }
-      } catch (err) {
-        console.log(`     ⚠️  Forum card search failed for "${term}": ${err.message}`);
-      }
-    }
+  console.log(`     Extracted ${results.length} items from ${threadLinks.length} threads`);
+  
+  // PHASE 6: Report failed threads
+  if (failedThreads.length > 0) {
+    console.log(`     ⚠️  ${failedThreads.length} threads failed:`);
+    failedThreads.slice(0, 5).forEach(ft => {
+      console.log(`       - ${ft.url}`);
+    });
   }
-
-  console.log(`     Extracted ${results.length} items (${results.filter(r => r.unreleased).length} unreleased)`);
 
   return results;
 }
@@ -883,17 +883,23 @@ async function scrape(options = {}) {
       console.log();
     }
 
-    // Filter for pi-agent related content
+    // PHASE 4: NO FILTERING DURING COLLECTION
+    // Save RAW data first (all results without any filtering)
+    await fs.mkdir(runDir, { recursive: true });
+    await fs.writeFile(path.join(runDir, 'all-messages-raw.json'), JSON.stringify(allResults, null, 2));
+    console.log(`\n💾 Raw data saved (${allResults.length} total items)`);
+
+    // NOW apply filtering for pi-agent related content
     const filteredResults = allResults.filter(result => {
       const text = ((result.title || '') + ' ' + result.content + ' ' + result.links.join(' ')).toLowerCase();
       return state.filterTerms.some(term => text.includes(term.toLowerCase()));
     });
 
-    // Extract unique GitHub repos
+    // Extract unique GitHub repos from FILTERED results
     const githubRepos = {};
     const seenUrls = new Set();
     
-    allResults.forEach(result => {
+    filteredResults.forEach(result => {
       result.links.forEach(link => {
         if (seenUrls.has(link)) return;
         seenUrls.add(link);
@@ -910,6 +916,37 @@ async function scrape(options = {}) {
             };
           }
           githubRepos[repoName].mentions.push({
+            channel: result.channel,
+            author: result.author,
+            timestamp: result.timestamp,
+            context: result.content.substring(0, 100)
+          });
+        }
+      });
+    });
+
+    // ALSO extract all repos from unfiltered data for reporting
+    const allGithubRepos = {};
+    const allSeenUrls = new Set();
+    
+    allResults.forEach(result => {
+      result.links.forEach(link => {
+        if (allSeenUrls.has(link)) return;
+        allSeenUrls.add(link);
+        
+        const match = link.match(/github\.com\/([^\/]+\/[^\/\?#]+)/);
+        if (match) {
+          const repoName = match[1].replace(/\.git$/, '');
+          if (!allGithubRepos[repoName]) {
+            allGithubRepos[repoName] = {
+              name: repoName,
+              url: `https://github.com/${repoName}`,
+              firstSeen: runTimestamp,
+              mentions: [],
+              piAgent: !!githubRepos[repoName] // Mark if it's pi-agent related
+            };
+          }
+          allGithubRepos[repoName].mentions.push({
             channel: result.channel,
             author: result.author,
             timestamp: result.timestamp,
@@ -939,37 +976,56 @@ async function scrape(options = {}) {
     }
 
     console.log(`\n📊 Results:`);
-    console.log(`  - Total messages with GitHub links: ${allResults.length}`);
+    console.log(`  - Total messages found: ${allResults.length}`);
     console.log(`  - Pi-agent related: ${filteredResults.length}`);
-    console.log(`  - Unique GitHub repos: ${Object.keys(githubRepos).length}`);
+    console.log(`  - Unique pi-agent repos: ${Object.keys(githubRepos).length}`);
+    console.log(`  - Total unique repos (all): ${Object.keys(allGithubRepos).length}`);
 
     // Extract unreleased forum posts (posts without GitHub URLs)
     const unreleasedPosts = filteredResults.filter(result => result.unreleased && result.title);
     
     // Save run data
-    await fs.mkdir(runDir, { recursive: true });
-    
-    await fs.writeFile(path.join(runDir, 'all-messages.json'), JSON.stringify(allResults, null, 2));
     await fs.writeFile(path.join(runDir, 'pi-agent-messages.json'), JSON.stringify(filteredResults, null, 2));
     await fs.writeFile(path.join(runDir, 'repos.json'), JSON.stringify(githubRepos, null, 2));
+    await fs.writeFile(path.join(runDir, 'all-repos-unfiltered.json'), JSON.stringify(allGithubRepos, null, 2));
     await fs.writeFile(path.join(runDir, 'unreleased-posts.json'), JSON.stringify(unreleasedPosts, null, 2));
     await fs.writeFile(path.join(runDir, 'metadata.json'), JSON.stringify({
       runId,
       timestamp: runTimestamp,
       previousRun: lastRun,
-      messagesScanned: allResults.length,
+      totalMessagesScanned: allResults.length,
       piAgentRelated: filteredResults.length,
       githubRepos: Object.keys(githubRepos).length,
+      totalGithubReposFound: Object.keys(allGithubRepos).length,
       unreleasedPosts: unreleasedPosts.length
     }, null, 2));
 
     console.log(`\n💾 Saved to: ${runDir}/`);
+    console.log(`   - all-messages-raw.json (unfiltered)`);
+    console.log(`   - pi-agent-messages.json (filtered)`);
+    console.log(`   - repos.json (pi-agent repos)`);
+    console.log(`   - all-repos-unfiltered.json (all repos found)`);
 
     if (Object.keys(githubRepos).length > 0) {
-      console.log(`\n🆕 GitHub repositories found:\n`);
+      console.log(`\n🆕 Pi-Agent GitHub repositories found (${Object.keys(githubRepos).length}):\n`);
       for (const [name, info] of Object.entries(githubRepos)) {
         console.log(`  - ${name}`);
         console.log(`    ${info.url}`);
+      }
+    }
+
+    // Report repos that were found but filtered out
+    const nonPiAgentRepos = Object.keys(allGithubRepos).filter(name => !githubRepos[name]);
+    if (nonPiAgentRepos.length > 0) {
+      console.log(`\n🔍 Non-pi-agent repos found (${nonPiAgentRepos.length}) - check if any should be added:\n`);
+      nonPiAgentRepos.slice(0, 10).forEach(name => {
+        const info = allGithubRepos[name];
+        console.log(`  - ${name}`);
+        console.log(`    ${info.url}`);
+        console.log(`    Mentions: ${info.mentions.length}`);
+      });
+      if (nonPiAgentRepos.length > 10) {
+        console.log(`  ... and ${nonPiAgentRepos.length - 10} more`);
       }
     }
     
@@ -1008,7 +1064,7 @@ async function scrape(options = {}) {
     console.log(`\n✅ State saved`);
     console.log(`📁 Run directory: ${runDir}`);
 
-    return { repos: existingRepos, results: filteredResults };
+    return { repos: existingRepos, results: filteredResults, allRepos: allGithubRepos };
     
   } finally {
     if (browser) {
