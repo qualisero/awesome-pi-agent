@@ -5,6 +5,7 @@
 Concise, curated resources for extending and integrating the [pi coding agent](https://shittycodingagent.ai)
 (Yes, it was tempting to call it `shitty-list`).
 
+- [guardian-agent-prompts](https://github.com/milkomida77/guardian-agent-prompts) - 49 production-tested AI agent system prompts for multi-agent orchestration with hooks, skills, and quality gates. MIT licensed.
 ## Primary project
 
 - [pi (pi-mono)](https://github.com/badlogic/pi-mono) — Official coding agent repository
