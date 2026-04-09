@@ -131,6 +131,7 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 ## Providers & Integrations
 
 - [pi-acp](https://github.com/svkozak/pi-acp) — ACP adapter for pi agent
+- [pi-aliyun](https://git.sr.ht/~whynothugo/pi-aliyun) — Pi provider for Aliyun (open-weight models via OpenAI compatible API)
 - [pi-config](https://github.com/vtemian/pi-config) — Project config example
 - [pi-synthetic](https://github.com/aliou/pi-synthetic) — Pi provider for Synthetic (open-source models via Anthropic-compatible API)
 
