@@ -63,6 +63,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [pi-gui](https://github.com/VVander/pi-gui) — GUI extension providing visual interface for pi agent
 - [pi-screenshots-picker](https://github.com/Graffioh/pi-screenshots-picker) — Screenshot picker extension for better screenshot selections
 - [pi-super-curl](https://github.com/Graffioh/pi-super-curl) — Extension to empower curl requests with coding agent capabilities
+- [pi-whisper](https://github.com/leohenon/pi-whisper) — Ephemeral inline side-thread mode for pi; whisper messages share context while active, then drop from future context
 - [shitty-extensions](https://github.com/hjanuschka/shitty-extensions) — Community extensions collection
   - [cost-tracker](https://github.com/hjanuschka/shitty-extensions#cost-trackerts) — Session spending analysis from pi logs
   - [handoff](https://github.com/hjanuschka/shitty-extensions#handoffts) — Transfer context to new focused sessions
