@@ -16,6 +16,7 @@ Concise, curated resources for extending and integrating the [pi coding agent](h
 Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality by handling events, registering tools, or adding UI components. Previously called "hooks" or "custom tools".
 
 - [agent-stuff (mitsupi)](https://github.com/mitsuhiko/agent-stuff) — Skills and extensions for pi (answer, review, loop, files, todos, codex-tuning, whimsical)
+- [pi-ask-mode](https://github.com/markokocic/pi-ask-mode) - Ask mode for pi - chats and asnwers question without modifying the code
 - [cloud-research-agent](https://github.com/aadishv/dotfiles/blob/main/.pi/agent/skills/cloud-research-agent/SKILL.md) — AI agent in cloud sandbox for researching GitHub repositories and libraries
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
   - [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
@@ -33,6 +34,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [permission](https://github.com/prateekmedia/pi-hooks/tree/main/permission) — Layered permission control with four levels (off, low, medium, high)
 - [pi-canvas](https://github.com/jyaunches/pi-canvas) — Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
 - [pi-cost-dashboard](https://github.com/mrexodia/pi-cost-dashboard) — Interactive web dashboard to monitor and analyze API costs
+- [pi-clojure](https://github.com/markokocic/pi-clojure) - Clojure nrepl and parent repair tools implemented as native pi tools, without any external dependencies.
 - [pi-extensions](https://github.com/tmustier/pi-extensions) — Collection of delightful extensions for pi agent
   - [agent-guidance](https://github.com/tmustier/pi-extensions/tree/main/agent-guidance) — Agent behavior guidance and instructions
   - [arcade](https://github.com/tmustier/pi-extensions/tree/main/arcade) — Arcade-style interactions and games
@@ -40,6 +42,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
   - [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
+- [pi-minimax-tools](https://github.com/markokocic/pi-minimax-tools) - MiniMax `web_search` and `understand_image` implemented as native pi tools (no MCP, no CLI)
 - [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when the agent finishes and waits for input
 - [pi-notify-pp](https://github.com/kim0/pi-notify-pp) — Rich notification extension with tool stats, error tracking, and OSC 777 support
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
