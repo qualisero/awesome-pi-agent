@@ -109,6 +109,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [task-factory](https://github.com/patleeman/task-factory) — Queue-first work orchestrator for Pi with planning, execution skills, and web UI
 - [pi-ds](https://github.com/zenobi-us/pi-ds) — TUI design system components for pi-mono extensions with TypeScript support
 - [pi-mobile](https://github.com/ayagmar/pi-mobile) — Android client for Pi coding agent with session management over Tailscale
+- [pi-pager](https://github.com/CymatiStatic/pi-pager) — Phone/watch push and two-way reply for Pi (and other coding agents) via ntfy.sh, with multi-instance routing and blocking approval exit codes
 - [pi-stuffed](https://github.com/raunovillberg/pi-stuffed) — Collection of pi extensions including Reddit integration and more
 - [pi-sub](https://github.com/marckrenn/pi-sub) — Monorepo for usage tracking extensions with shared core (sub-core, sub-bar UI widget)
 
