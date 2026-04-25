@@ -25,6 +25,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
   - [processes](https://github.com/aliou/pi-extensions/tree/main/extensions/processes) — Process management utilities
 - [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — SCIP code intelligence tools for pi agent
+- [pi-boss](https://github.com/skyfallsin/pi-boss) — Spawn and manage sub-agents in visible tmux panes with multi-agent orchestration
 - [pi-extensions](https://github.com/kcosr/pi-extensions) — Collection of extensions for pi coding agent
   - [toolwatch](https://github.com/kcosr/pi-extensions/tree/main/toolwatch) — Tool call auditing and approval system with SQLite logging
 - [pi-hooks](https://github.com/prateekmedia/pi-hooks) — Minimal reference extensions
@@ -40,10 +41,13 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [tab-status](https://github.com/tmustier/pi-extensions/tree/main/tab-status) — Tab status indicators and management
   - [usage-extension](https://github.com/tmustier/pi-extensions/tree/main/usage-extension) — Usage statistics dashboard across sessions
 - [pi-interview-tool](https://github.com/nicobailon/pi-interview-tool) — Web-based form tool with keyboard navigation, themes, and image attachments
+- [pi-mem](https://github.com/jo-inc/pi-mem) — Plain-Markdown persistent memory for coding agents with long-term facts, daily logs, scratchpad, and semantic search
 - [pi-notification-extension](https://github.com/lsj5031/pi-notification-extension) — Telegram/bell alerts when the agent finishes and waits for input
 - [pi-notify-pp](https://github.com/kim0/pi-notify-pp) — Rich notification extension with tool stats, error tracking, and OSC 777 support
 - [pi-powerline-footer](https://github.com/nicobailon/pi-powerline-footer) — Powerline-style status bar with git integration, context awareness, and token intelligence
 - [pi-prompt-template-model](https://github.com/nicobailon/pi-prompt-template-model) — Prompt templates with model/skill/thinking frontmatter and auto-restore
+- [pi-reflect](https://github.com/skyfallsin/pi-reflect) — Self-improving behavioral files that analyze session transcripts for correction patterns and make surgical edits
+- [pi-room](https://github.com/skyfallsin/pi-room) — Multi-agent awareness extension where agents discover peers, peek at their work, and coordinate via tmux
 - [pi-rewind-hook](https://github.com/nicobailon/pi-rewind-hook) — Rewind file changes with git-based checkpoints and conversation branching
 - [pi-ssh-remote](https://github.com/cv/pi-ssh-remote) — Extension that redirects all file operations and commands to a remote host via SSH
 - [pi-extensions](https://github.com/richardgill/pi-extensions) — Collection of extensions for pi coding agent
@@ -96,6 +100,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 ## Tools & Utilities
 
 - [agent-desktop](https://github.com/BaLaurent/agent-desktop) — Desktop application for pi agent with native UI
+- [camofox-browser](https://github.com/jo-inc/camofox-browser) — Stealth headless browser for AI agents with anti-detection, Playwright API, and REST interface
 - [CodexBar](https://github.com/steipete/CodexBar) — macOS menu bar app for tracking AI coding tool usage (session + weekly limits, reset timers) — supports Codex, Claude, Cursor, Gemini, and more
 - [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Real-time dashboard for monitoring Claude Code sessions with AI-powered summaries, PR tracking, and multi-repo support
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
@@ -133,6 +138,7 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 - [pi-acp](https://github.com/svkozak/pi-acp) — ACP adapter for pi agent
 - [pi-config](https://github.com/vtemian/pi-config) — Project config example
 - [pi-synthetic](https://github.com/aliou/pi-synthetic) — Pi provider for Synthetic (open-source models via Anthropic-compatible API)
+- [pi-vertex-anthropic](https://github.com/skyfallsin/pi-vertex-anthropic) — Claude via Google Cloud Vertex AI provider extension
 
 ---
 
