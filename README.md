@@ -99,6 +99,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 - [CodexBar](https://github.com/steipete/CodexBar) — macOS menu bar app for tracking AI coding tool usage (session + weekly limits, reset timers) — supports Codex, Claude, Cursor, Gemini, and more
 - [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Real-time dashboard for monitoring Claude Code sessions with AI-powered summaries, PR tracking, and multi-repo support
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
+- [garcon](https://github.com/cfal/garcon) — Web/PWA coding workspace with Pi agent support
 - [gondolin](https://github.com/earendil-works/gondolin) — Linux micro-VM sandbox with programmable network/filesystem and Pi integration
 - [gob](https://github.com/juanibiapina/gob) — Process manager for AI agents with background job support and TUI interface
 - [lima](https://github.com/lima-vm/lima) — Linux micro-VM environment for isolated agent execution
