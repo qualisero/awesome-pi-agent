@@ -15,6 +15,7 @@ Concise, curated resources for extending and integrating the [pi coding agent](h
 
 Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality by handling events, registering tools, or adding UI components. Previously called "hooks" or "custom tools".
 
+- [pi-git-assistant](https://github.com/elt7613/pi-git-assistant) — *Never write `git commit -m "wip"` again — your agent reads the diff, picks the right branch, and crafts proper conventional commits (and PR descriptions) for you*
 - [agent-stuff (mitsupi)](https://github.com/mitsuhiko/agent-stuff) — Skills and extensions for pi (answer, review, loop, files, todos, codex-tuning, whimsical)
 - [cloud-research-agent](https://github.com/aadishv/dotfiles/blob/main/.pi/agent/skills/cloud-research-agent/SKILL.md) — AI agent in cloud sandbox for researching GitHub repositories and libraries
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
