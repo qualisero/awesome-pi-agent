@@ -20,6 +20,14 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
 - [michalvavra/agents](https://github.com/michalvavra/agents) — User extensions and configuration examples
   - [filter-output](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/filter-output.ts) — Redact sensitive data (API keys, tokens, passwords) from tool results before LLM sees them
   - [security](https://github.com/michalvavra/agents/blob/main/agents/pi/extensions/security.ts) — Block dangerous bash commands and protect sensitive paths from writes
+- [my-little-pi](https://github.com/christheridge/my-little-pi) — A collection of custom extensions for pi
+  - [session-changes](https://github.com/chrisetheridge/my-little-pi/tree/main/extensions/session-changes) — Adds a list of file changes (tracked by git) to the session UI
+  - [review](https://github.com/chrisetheridge/my-little-pi/tree/main/extensions/review) — Launches a review UI for the current changes, with the ability to comment and send the feedback to the agent
+  - [little-spinner](https://github.com/chrisetheridge/my-little-pi/tree/main/extensions/little-spinner) — Replaces the default spinner with a custom animated spinner
+  - [little-renderer](https://github.com/chrisetheridge/my-little-pi/tree/main/extensions/little-renderer) — Replaces the default session renderer with a custom renderer, mainly simplifies tool output and progress reporting
+  - [little-footer](https://github.com/chrisetheridge/my-little-pi/tree/main/extensions/little-footer) — Replaces the default footer with a custom footer. Most notably, adds support for git tracking and OpenAI usage windows
+  - [downtime](https://github.com/chrisetheridge/my-little-pi/tree/main/extensions/downtime) — An extension to force you to stop coding
+  - [land](https://github.com/chrisetheridge/my-little-pi/tree/main/extensions/land) — TUI for common tasks assocaited with pushing a commit or merging
 - [pi-extensions](https://github.com/aliou/pi-extensions) — Collection of debugging and utility extensions
   - [debug](https://github.com/aliou/pi-extensions/tree/main/extensions/debug) — Session path clipboard utility and debugging tools
   - [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
@@ -90,6 +98,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
   - [transcribe](https://github.com/badlogic/pi-skills/tree/main/transcribe) — Speech-to-text transcription via Groq Whisper API
   - [vscode](https://github.com/badlogic/pi-skills/tree/main/vscode) — VS Code integration for diffs and file comparison
   - [youtube-transcript](https://github.com/badlogic/pi-skills/tree/main/youtube-transcript) — Fetch YouTube video transcripts
+- [christheridge/skills](https://github.com/chrisetheridge/skills/tree/main) — Skills focused around engineering and improving productivity with AI agents
 
 ---
 
