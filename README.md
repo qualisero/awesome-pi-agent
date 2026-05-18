@@ -33,6 +33,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [permission](https://github.com/prateekmedia/pi-hooks/tree/main/permission) — Layered permission control with four levels (off, low, medium, high)
 - [pi-canvas](https://github.com/jyaunches/pi-canvas) — Interactive TUI canvases (calendar, document, flights) rendered inline using native pi TUI
 - [pi-cost-dashboard](https://github.com/mrexodia/pi-cost-dashboard) — Interactive web dashboard to monitor and analyze API costs
+- [pi-crw](https://github.com/us/pi-crw) — web_search + web_scrape tools via the local-first crw scraper; single binary, zero-config, self-disables if no backend present
 - [pi-extensions](https://github.com/tmustier/pi-extensions) — Collection of delightful extensions for pi agent
   - [agent-guidance](https://github.com/tmustier/pi-extensions/tree/main/agent-guidance) — Agent behavior guidance and instructions
   - [arcade](https://github.com/tmustier/pi-extensions/tree/main/arcade) — Arcade-style interactions and games
