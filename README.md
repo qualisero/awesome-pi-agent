@@ -96,6 +96,7 @@ Skills are reusable workflows described in natural language (SKILL.md format) th
 ## Tools & Utilities
 
 - [agent-desktop](https://github.com/BaLaurent/agent-desktop) — Desktop application for pi agent with native UI
+- [agenttrace](https://github.com/luoyuctl/agenttrace) — Local TUI observability for AI coding-agent sessions, including Oh My Pi logs, token usage, costs, tool failures, latency, anomalies, diffs, and CI evidence
 - [CodexBar](https://github.com/steipete/CodexBar) — macOS menu bar app for tracking AI coding tool usage (session + weekly limits, reset timers) — supports Codex, Claude, Cursor, Gemini, and more
 - [claude-code-ui](https://github.com/KyleAMathews/claude-code-ui) — Real-time dashboard for monitoring Claude Code sessions with AI-powered summaries, PR tracking, and multi-repo support
 - [codemap](https://github.com/kcosr/codemap) — Compact, token-aware codebase maps for LLMs and coding agents (TypeScript/JavaScript symbol extraction, markdown structure)
