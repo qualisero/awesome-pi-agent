@@ -162,7 +162,7 @@ Deep links into the official pi-mono repository:
 - [Package README](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/README.md) — High-level package README and quick start
 - [Docs directory](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/docs) — Full documentation (CLI, SDK, RPC, sessions, compaction, themes)
 - [Examples directory](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/examples) — Working examples for extensions, SDK usage, and more
-- [Theme guide](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/theme.md) — Theme schema, color tokens, and examples
+- [Theme guide](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/themes.md) — Theme schema, color tokens, and examples
 - [Migration guide](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/CHANGELOG.md#extensions-migration) — Upgrading from hooks/tools to extensions
 - [Web UI utilities](https://github.com/badlogic/pi-mono/tree/main/packages/web-ui) — Provider dialogs and model discovery utilities
 - [Model registry](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/src/core/model-registry.ts) — Core model/provider registry implementation
