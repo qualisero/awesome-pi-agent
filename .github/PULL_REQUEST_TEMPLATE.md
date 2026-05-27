@@ -3,7 +3,7 @@
 ## Summary
 <!-- Short summary of the change. If adding a resource, give the category and one-line description. -->
 
-Category: (Getting Started & Docs | Extensions | Examples & Recipes | Integrations & Providers | Community & Contributing)
+Category: (Extensions | Skills | Tools & Utilities | Prompt Templates | Themes | Providers & Integrations | Examples & Recipes | Related Projects)
 
 Resource link: <url>
 
