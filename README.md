@@ -1,9 +1,24 @@
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+[![Check Links](https://github.com/qualisero/awesome-pi-agent/actions/workflows/check-links.yml/badge.svg)](https://github.com/qualisero/awesome-pi-agent/actions/workflows/check-links.yml)
 
 # awesome-pi-agent
 
-Concise, curated resources for extending and integrating the [pi coding agent](https://shittycodingagent.ai)
-(Yes, it was tempting to call it `shitty-list`).
+Curated resources for extending and integrating the [pi coding agent](https://pi.dev) (a.k.a. `pi-mono`): a terminal-first AI coding agent with a unified LLM API, TUI/web UI libraries, and a pluggable extension model.
+
+## Contents
+
+- [Primary project](#primary-project)
+- [Extensions](#extensions)
+- [Skills](#skills)
+- [Tools & Utilities](#tools--utilities)
+- [Prompt Templates](#prompt-templates)
+- [Themes](#themes)
+- [Providers & Integrations](#providers--integrations)
+- [Examples & Recipes](#examples--recipes)
+- [Related Projects](#related-projects)
+- [Official Documentation](#official-documentation)
+- [Submission Checklist](#submission-checklist)
+- [Contributing](#contributing)
 
 ## Primary project
 
@@ -148,7 +163,6 @@ Prompt templates (formerly "slash commands") let you create reusable prompt shor
 ## Related Projects
 
 - [anthropics/claude-code](https://github.com/anthropics/claude-code) — Official Anthropic agentic coding tool that lives in your terminal with natural language commands and git workflow support
-- [awesome-pi-agent (qualisero)](https://github.com/qualisero/awesome-pi-agent) — Community-curated awesome-style list of pi-agent resources
 - [claude-plugins-official](https://github.com/anthropics/claude-plugins-official) — Official Anthropic directory of Claude Code plugins with MCP servers, skills, and commands
 - [synthetic-lab/octofriend](https://github.com/synthetic-lab/octofriend) — Open-source coding assistant agent with friendly interactions and codebase understanding
 
