@@ -25,6 +25,7 @@ Extensions are TypeScript/JavaScript modules that enhance pi-agent functionality
   - [meta](https://github.com/aliou/pi-extensions/tree/main/extensions/meta) — Meta operations for pi agent
   - [processes](https://github.com/aliou/pi-extensions/tree/main/extensions/processes) — Process management utilities
 - [pi-agent-scip](https://github.com/qualisero/pi-agent-scip) — SCIP code intelligence tools for pi agent
+- [pi-auto-router](https://github.com/danialranjha/pi-auto-router) — Multi-provider model router for pi with same-request failover, budget-aware routing, and policy rules
 - [pi-extensions](https://github.com/kcosr/pi-extensions) — Collection of extensions for pi coding agent
   - [toolwatch](https://github.com/kcosr/pi-extensions/tree/main/toolwatch) — Tool call auditing and approval system with SQLite logging
 - [pi-hooks](https://github.com/prateekmedia/pi-hooks) — Minimal reference extensions
